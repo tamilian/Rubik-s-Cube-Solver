@@ -83,8 +83,6 @@ void print(int*** array){
 
 // now we need to come up as many moves as possible and how the transpose 
 // all the moves are with respective to the green center piece
-// it was discussed that that was all we really needed, it ticks the boxes for all the moves that are needed
-
 
 // MOVES
 
@@ -152,31 +150,37 @@ temp = new int **[DIMENSION1];
 
     // new          original 
     
+
+    // yellow moves to green center piece
     temp[2][0][2] = cube[5][0][2];
     temp[2][1][2] = cube[5][1][2];
     temp[2][2][2] = cube[5][2][2];
 
-    temp[0][0][2] = cube[2][j][k];
-    temp[0][1][2] = cube[2][j][k];
-    temp[0][2][2] = cube[2][j][k];
+    // green moves to white
+    temp[0][0][2] = cube[2][0][2];
+    temp[0][1][2] = cube[2][1][2];
+    temp[0][2][2] = cube[2][2][2];
 
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
+    // white moves to blue
+    temp[4][0][2] = cube[0][0][2];
+    temp[4][1][2] = cube[0][1][2];
+    temp[4][2][2] = cube[0][2][2];
 
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
+    // blue moves to yellow
+    temp[5][0][2] = cube[4][0][2];
+    temp[5][1][2] = cube[4][1][2];
+    temp[5][2][2] = cube[4][2][2];
 
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
+    // these are all transpositions on red face
+    temp[3][0][2] = cube[3][0][0];
+    temp[3][1][2] = cube[3][0][1];
+    temp[3][2][2] = cube[3][0][2];
+    temp[3][0][1] = cube[3][1][0];
 
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
-    temp[i][j][k] = cube[i][j][k];
+    temp[3][2][1] = cube[3][1][2];
+    temp[3][0][0] = cube[3][2][0];
+    temp[3][1][0] = cube[3][2][1];
+    temp[3][2][0] = cube[3][2][2];
 
 
 }
