@@ -186,7 +186,7 @@ temp = new int **[DIMENSION1];
 }
 
 
-int*** left_prime(){
+int*** left_prime(int*** cube){
     
 int*** temp;
 
@@ -201,6 +201,48 @@ temp = new int **[DIMENSION1];
         
         }
     }
+
+    for (int i = 0; i < DIMENSION1; i++){
+        for (int j = 0; j < DIMENSION2; j++){
+            for (int k = 0; k < DIMENSION3; k++){
+            temp[i][j][k] = cube[i][j][k];
+            }
+        }
+    }
+
+    temp[2][0][2] = cube[5][0][2];
+    temp[2][1][2] = cube[5][1][2];
+    temp[2][2][2] = cube[5][2][2];
+
+    // green moves to white
+    temp[0][0][2] = cube[2][0][2];
+    temp[0][1][2] = cube[2][1][2];
+    temp[0][2][2] = cube[2][2][2];
+
+    // white moves to blue
+    temp[4][0][2] = cube[0][0][2];
+    temp[4][1][2] = cube[0][1][2];
+    temp[4][2][2] = cube[0][2][2];
+
+    // blue moves to yellow
+    temp[5][0][2] = cube[4][0][2];
+    temp[5][1][2] = cube[4][1][2];
+    temp[5][2][2] = cube[4][2][2];
+
+    // these are all transpositions on red face
+    temp[3][0][2] = cube[3][0][0];
+    temp[3][1][2] = cube[3][0][1];
+    temp[3][2][2] = cube[3][0][2];
+    temp[3][0][1] = cube[3][1][0];
+
+    temp[3][2][1] = cube[3][1][2];
+    temp[3][0][0] = cube[3][2][0];
+    temp[3][1][0] = cube[3][2][1];
+    temp[3][2][0] = cube[3][2][2];
+
+
+
+    
 }
 
 
