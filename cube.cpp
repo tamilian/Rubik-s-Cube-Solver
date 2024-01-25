@@ -19,37 +19,37 @@ class RubiksCube {
     // implement an iterative deepening algorithm, finds solution in 30 steps or less to input rubiks cube
 
 
-// 0 - white
-// 1 - orange
-// 2 - green
-// 3 - red
-// 4 - blue
-// 5 - yellow
+    // 0 - white
+    // 1 - orange
+    // 2 - green
+    // 3 - red
+    // 4 - blue
+    // 5 - yellow
 
-RubiksCube();
+    RubiksCube();
 
 
-// Constructor
-RubiksCube() {
-    cube = new int**[DIMENSION1];
-    for (int i = 0; i < DIMENSION1; i++) {
-        cube[i] = new int*[DIMENSION2];
-        for (int j = 0; j < DIMENSION2; j++) {
-            cube[i][j] = new int[DIMENSION3];
+    // Constructor
+    RubiksCube() {
+        cube = new int**[DIMENSION1];
+        for (int i = 0; i < DIMENSION1; i++) {
+            cube[i] = new int*[DIMENSION2];
+            for (int j = 0; j < DIMENSION2; j++) {
+                cube[i][j] = new int[DIMENSION3];
+            }
         }
     }
-}
 
-// Destructor
-~RubiksCube() {
-    for (int i = 0; i < DIMENSION1; i++) {
-        for (int j = 0; j < DIMENSION2; j++) {
-            delete[] cube[i][j];
+    // Destructor
+    ~RubiksCube() {
+        for (int i = 0; i < DIMENSION1; i++) {
+            for (int j = 0; j < DIMENSION2; j++) {
+                delete[] cube[i][j];
+            }
+            delete[] cube[i];
         }
-        delete[] cube[i];
+        delete[] cube;
     }
-    delete[] cube;
-}
 
 
 // take user input 
@@ -151,7 +151,7 @@ RubiksCube() {
 
 
 
-    int*** left(int*** cube){
+    int*** right(int*** cube){
 
     // allocate memory for new 3D array
 
@@ -218,7 +218,7 @@ RubiksCube() {
     }
 
 
-    int*** left_prime(int*** cube){
+    int*** right_prime(int*** cube){
         
     int*** temp;
 
@@ -242,41 +242,37 @@ RubiksCube() {
             }
         }
 
-        temp[2][0][2] = cube[5][0][2];
-        temp[2][1][2] = cube[5][1][2];
-        temp[2][2][2] = cube[5][2][2];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-        // green moves to white
-        temp[0][0][2] = cube[2][0][2];
-        temp[0][1][2] = cube[2][1][2];
-        temp[0][2][2] = cube[2][2][2];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-        // white moves to blue
-        temp[4][0][2] = cube[0][0][2];
-        temp[4][1][2] = cube[0][1][2];
-        temp[4][2][2] = cube[0][2][2];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-        // blue moves to yellow
-        temp[5][0][2] = cube[4][0][2];
-        temp[5][1][2] = cube[4][1][2];
-        temp[5][2][2] = cube[4][2][2];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-        // these are all transpositions on red face
-        temp[3][0][2] = cube[3][0][0];
-        temp[3][1][2] = cube[3][0][1];
-        temp[3][2][2] = cube[3][0][2];
-        temp[3][0][1] = cube[3][1][0];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-        temp[3][2][1] = cube[3][1][2];
-        temp[3][0][0] = cube[3][2][0];
-        temp[3][1][0] = cube[3][2][1];
-        temp[3][2][0] = cube[3][2][2];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
     }
 
 
 
-    int*** right(){
+    int*** left(int*** cube){
         
 
     int*** temp;
@@ -292,9 +288,35 @@ RubiksCube() {
             
             }
         }
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
-    int*** right_prime(){
+    int*** left_prime(int ***cube){
 
     int*** temp;
 
@@ -309,9 +331,35 @@ RubiksCube() {
             
             }
         }
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
-    int*** up(){
+    int*** up(int*** cube){
 
     int*** temp;
 
@@ -326,9 +374,35 @@ RubiksCube() {
             
             }
         }
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
-    int*** up_prime(){
+    int*** up_prime(int*** cube){
         
     int*** temp;
 
@@ -343,9 +417,34 @@ RubiksCube() {
             
             }
         }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
-    int*** down(){
+    int*** down(int*** cube){
 
     int*** temp;
 
@@ -360,6 +459,31 @@ RubiksCube() {
             
             }
         }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
     int*** down_prime(){
@@ -377,6 +501,31 @@ RubiksCube() {
             
             }
         }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
     int*** front(){
@@ -394,9 +543,118 @@ RubiksCube() {
             
             }
         }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
     }
 
-    int*** front_prime(){
+    int*** front_prime(int*** cube){
+        
+    int*** temp;
+
+    temp = new int **[DIMENSION1];
+
+        for (int i = 0; i < DIMENSION1; i++){
+
+            temp[i] = new int *[DIMENSION2];
+
+            for (int j = 0; j < DIMENSION2; j++){
+                temp[i][j] = new int[DIMENSION3];
+            
+            }
+        }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+    }
+
+    int*** back(int*** cube){
+        
+    int*** temp;
+
+    temp = new int **[DIMENSION1];
+
+        for (int i = 0; i < DIMENSION1; i++){
+
+            temp[i] = new int *[DIMENSION2];
+
+            for (int j = 0; j < DIMENSION2; j++){
+                temp[i][j] = new int[DIMENSION3];
+            
+            }
+        }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+    }
+
+    int*** back_prime(int*** cube){
         
     int*** temp;
 
@@ -413,46 +671,35 @@ RubiksCube() {
         }
     }
 
-    int*** back(){
-        
-    int*** temp;
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-    temp = new int **[DIMENSION1];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-        for (int i = 0; i < DIMENSION1; i++){
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-            temp[i] = new int *[DIMENSION2];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-            for (int j = 0; j < DIMENSION2; j++){
-                temp[i][j] = new int[DIMENSION3];
-            
-            }
-        }
-    }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
-    int*** back_prime(){
-        
-    int*** temp;
-
-    temp = new int **[DIMENSION1];
-
-        for (int i = 0; i < DIMENSION1; i++){
-
-            temp[i] = new int *[DIMENSION2];
-
-            for (int j = 0; j < DIMENSION2; j++){
-                temp[i][j] = new int[DIMENSION3];
-            
-            }
-        }
-    }
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
 
         
 
-    }
-
-
-
+};
 
 
 
