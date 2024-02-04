@@ -101,7 +101,8 @@ public:
         
         */
 
-    void rotateFace(Color color1, int color1Dest, Color color2, int color2Dest, Color color3, int color3Dest, Color color4, int color4Dest, Color color5, bool clockwise){
+    void rotateFace(Color color1Start,Color color1Dest, Color color2Start, Color color2Dest, Color color3Start, 
+                    Color color3Dest, Color color4Dest, Color color4Start, Color color5, Color clockwise){
  
         // copy old cube onto new cube
         vector<vector<vector<int>>> temp(cube); // Create a temporary cube
@@ -114,48 +115,40 @@ public:
 
         // the first part is for the roatation itself
 
-        int j = 0; 
-        int k = 0;
+        // only j is being incremented
+
+
         
-        for (int a = 0; a < DIMENSION2; a++) {
+        for (int j = 0; j < DIMENSION2; j++) {
 
-            temp[color1Dest][j][k] = cube[color1][j][k];
+            temp[color1Dest][j] = cube[color1Start][j];
 
             j++;
-            k++;
+        }
+
+        for (int j = 0; j < DIMENSION2; j++) {
+
+            temp[color2Dest][j] = cube[color2Start][j];
+
+            j++;
         }
 
         j = 0;
-        k = 0;
 
-        for (int a = 0; a < DIMENSION2; a++) {
+        for (int j = 0; j < DIMENSION2; j++) {
 
-            temp[color2Dest][j][k] = cube[color2][j][k];
+            temp[color3Dest][j] = cube[color3Start][j];
 
             j++;
-            k++;
         }
 
         j = 0;
-        k = 0;
 
-        for (int a = 0; a < DIMENSION2; a++) {
+        for (int j = 0; j < DIMENSION2; j++) {
 
-            temp[color3Dest][j][k] = cube[color3][j][k];
-
-            j++;
-            k++;
-        }
-
-        j = 0;
-        k = 0;
-
-        for (int a = 0; a < DIMENSION2; a++) {
-
-            temp[color4Dest][j][k] = cube[color4][j][k];
+            temp[color4Dest][j] = cube[color4Start][j];
 
             j++;
-            k++;
         }
 
         // the second part does the same face transposition
@@ -168,8 +161,10 @@ public:
         temp[color5][0][2] = cube[color5][0][0];
         temp[color5][1][2] = cube[color5][0][1];
         temp[color5][2][2] = cube[color5][0][2];
+
         temp[color5][0][1] = cube[color5][1][0];
         temp[color5][2][1] = cube[color5][1][2];
+
         temp[color5][0][0] = cube[color5][2][0];
         temp[color5][1][0] = cube[color5][2][1];
         temp[color5][2][0] = cube[color5][2][2];
@@ -298,6 +293,10 @@ public:
         temp[0][0][0] = cube[4][0][0];
         temp[0][1][0] = cube[4][1][0];
         temp[0][2][0] = cube[4][2][0];
+
+
+
+
 
         // top row 
         temp[1][0][2] = cube[1][0][0];
