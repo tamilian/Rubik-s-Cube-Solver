@@ -1,117 +1,69 @@
-# include <iostream>
-# include <fstream>
-# include <string>
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+// each term in the enumeration is given a number, which can be used to access in index of array 
+
+enum Color {WHITE, GREEN, RED, BLUE, ORANGE, YELLOW};
 
 using namespace std;
 
-    
 class RubiksCube {
-    private: 
-        int*** cube;
-
-    // dimensions of dynamic 3d arrays holding cube data
+private:
+    // dimensions of dynamic 3d vectors holding cube data
     const int DIMENSION1 = 6;
     const int DIMENSION2 = 3;
     const int DIMENSION3 = 3;
 
-    public:
+    vector<vector<vector<int>>> cube; // 3D vector for cube data
 
-    // implement an iterative deepening algorithm, finds solution in 30 steps or less to input rubiks cube
-
-
-    // 0 - white
-    // 1 - orange
-    // 2 - green
-    // 3 - red
-    // 4 - blue
-    // 5 - yellow
-
-    RubiksCube();
-
-
+public:
     // Constructor
     RubiksCube() {
-        cube = new int**[DIMENSION1];
-        for (int i = 0; i < DIMENSION1; i++) {
-            cube[i] = new int*[DIMENSION2];
-            for (int j = 0; j < DIMENSION2; j++) {
-                cube[i][j] = new int[DIMENSION3];
-            }
-        }
+        // Resize the 3D vector to the appropriate dimensions
+        cube.resize(DIMENSION1, vector<vector<int>>(DIMENSION2, vector<int>(DIMENSION3)));
     }
 
-    // Destructor
-    ~RubiksCube() {
-        for (int i = 0; i < DIMENSION1; i++) {
-            for (int j = 0; j < DIMENSION2; j++) {
-                delete[] cube[i][j];
-            }
-            delete[] cube[i];
-        }
-        delete[] cube;
-    }
-
-
-// take user input 
-
-// starting state is depth 0
-
-    void takeInput(int*** initialState) {
-
+    // Function to read input from a file into the cube vector
+    void takeInput() {
         ifstream inputFile("input.txt");
 
-        const int DIMENSION1 = 6;
-        const int DIMENSION2 = 3;
-        const int DIMENSION3 = 3;
-
         if (!inputFile.is_open()) {
-
-            cerr << "Failed to open file" << std::endl;
-            inputFile.close();
+            cerr << "Failed to open file" << endl;
             return;
-
-        } 
-        
-        else {
-            // Append into starting state
+        } else {
+            // Loop through the dimensions of the cube and read values from the file
             for (int i = 0; i < DIMENSION1; i++) {
                 for (int j = 0; j < DIMENSION2; j++) {
                     for (int k = 0; k < DIMENSION3; k++) {
-
-                        
-                        // Read values from the file and append to initialState
-                        if (!(inputFile >> initialState[i][j][k])) {
+                        int value;
+                        if (!(inputFile >> value)) {
                             cerr << "Error reading values from the file." << endl;
                             inputFile.close();
                             return;
                         }
+                        cube[i][j][k] = value;
                     }
                 }
             }
-
             // Close the file
             inputFile.close();
         }
     }
 
-    // ability to print any cube that is given
-    void print(int*** array){
 
-
-        for (int i = 0; i < DIMENSION1; i++){
-            for (int j = 0; j < DIMENSION2; j++){
-                for (int k = 0; k < DIMENSION3; k++){
-                cout << array[i][j][k];
+    // Function to print the cube for debugging
+    void printCube() {
+        for (int i = 0; i < DIMENSION1; i++) {
+            for (int j = 0; j < DIMENSION2; j++) {
+                for (int k = 0; k < DIMENSION3; k++) {
+                    cout << cube[i][j][k] << " ";
                 }
+                cout << endl;
             }
+            cout << endl;
         }
-
-    // add the brackets and endl later
-
     }
-
-
-
 
     // now we need to come up as many moves as possible and how the transpose 
     // all the moves are with respective to the green center piece
@@ -121,7 +73,7 @@ class RubiksCube {
 
     // index map of app pieces to help with writing transpositin functions 
 
-        std::string multilineString = R"(
+/*
             
     rubiksCube[0][0][0] = W   rubiksCube[0][0][1] = W   rubiksCube[0][0][2] = W
     rubiksCube[0][1][0] = W   rubiksCube[0][1][1] = W   rubiksCube[0][1][2] = W
@@ -147,176 +99,222 @@ class RubiksCube {
     rubiksCube[5][1][0] = Y   rubiksCube[5][1][1] = Y   rubiksCube[5][1][2] = Y
     rubiksCube[5][2][0] = Y   rubiksCube[5][2][1] = Y   rubiksCube[5][2][2] = Y
         
-        )";
+        */
+
+    void rotateFace(Color color1, int color1Dest, Color color2, int color2Dest, Color color3, int color3Dest, Color color4, int color4Dest, Color color5, bool clockwise){
+ 
+        // copy old cube onto new cube
+        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
 
 
+        // the pattern is that the color is the only thing that changes
 
-    int*** right(int*** cube){
+        // O(a * b * c * d * e), no O(n)
 
-    // allocate memory for new 3D array
 
-    // when a new move is made, there are 20 coordinates in array that are moved (differeeb
-    int*** temp;
+        // the first part is for the roatation itself
 
-    temp = new int **[DIMENSION1];
-
-        for (int i = 0; i < DIMENSION1; i++){
-
-            temp[i] = new int *[DIMENSION2];
-
-            for (int j = 0; j < DIMENSION2; j++){
-                temp[i][j] = new int[DIMENSION3];
-            
-            }
-        }
-
-        for (int i = 0; i < DIMENSION1; i++){
-            for (int j = 0; j < DIMENSION2; j++){
-                for (int k = 0; k < DIMENSION3; k++){
-                temp[i][j][k] = cube[i][j][k];
-                }
-            }
-        }
-
-        // now we transpose! 
-
-        // new          original 
+        int j = 0; 
+        int k = 0;
         
+        for (int a = 0; a < DIMENSION2; a++) {
 
-        // yellow moves to green center piece
+            temp[color1Dest][j][k] = cube[color1][j][k];
+
+            j++;
+            k++;
+        }
+
+        j = 0;
+        k = 0;
+
+        for (int a = 0; a < DIMENSION2; a++) {
+
+            temp[color2Dest][j][k] = cube[color2][j][k];
+
+            j++;
+            k++;
+        }
+
+        j = 0;
+        k = 0;
+
+        for (int a = 0; a < DIMENSION2; a++) {
+
+            temp[color3Dest][j][k] = cube[color3][j][k];
+
+            j++;
+            k++;
+        }
+
+        j = 0;
+        k = 0;
+
+        for (int a = 0; a < DIMENSION2; a++) {
+
+            temp[color4Dest][j][k] = cube[color4][j][k];
+
+            j++;
+            k++;
+        }
+
+        // the second part does the same face transposition
+        // you cant really loop this as there is no pattern, let's just change it manually
+
+        // it just checks if it is clockwise or not, which is taken in as a parameter
+
+        if (clockwise){
+
+        temp[color5][0][2] = cube[color5][0][0];
+        temp[color5][1][2] = cube[color5][0][1];
+        temp[color5][2][2] = cube[color5][0][2];
+        temp[color5][0][1] = cube[color5][1][0];
+        temp[color5][2][1] = cube[color5][1][2];
+        temp[color5][0][0] = cube[color5][2][0];
+        temp[color5][1][0] = cube[color5][2][1];
+        temp[color5][2][0] = cube[color5][2][2];
+            
+            
+
+        }
+        else{
+
+        temp[color5][2][0] = cube[color5][0][0];
+        temp[color5][1][0] = cube[color5][0][1];
+        temp[color5][2][0] = cube[color5][0][2];
+
+        temp[color5][2][1] = cube[color5][1][0];
+        temp[color5][0][1] = cube[color5][1][2];
+
+        temp[color5][2][2] = cube[color5][2][0];
+        temp[color5][1][2] = cube[color5][2][1];
+        temp[color5][0][2] = cube[color5][2][2];     
+
+        }
+
+    }
+
+
+    // Right move function
+    void right() {
+        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
+
+        // Yellow moves to green center piece
         temp[2][0][2] = cube[5][0][2];
         temp[2][1][2] = cube[5][1][2];
         temp[2][2][2] = cube[5][2][2];
 
-        // green moves to white
+        // Green moves to white
         temp[0][0][2] = cube[2][0][2];
         temp[0][1][2] = cube[2][1][2];
         temp[0][2][2] = cube[2][2][2];
 
-        // white moves to blue
+        // White moves to blue
         temp[4][0][2] = cube[0][0][2];
         temp[4][1][2] = cube[0][1][2];
         temp[4][2][2] = cube[0][2][2];
 
-        // blue moves to yellow
+        // Blue moves to yellow
         temp[5][0][2] = cube[4][0][2];
         temp[5][1][2] = cube[4][1][2];
         temp[5][2][2] = cube[4][2][2];
 
-        // these are all transpositions on red face
+        // Red face transpositions
         temp[3][0][2] = cube[3][0][0];
         temp[3][1][2] = cube[3][0][1];
         temp[3][2][2] = cube[3][0][2];
         temp[3][0][1] = cube[3][1][0];
-
         temp[3][2][1] = cube[3][1][2];
         temp[3][0][0] = cube[3][2][0];
         temp[3][1][0] = cube[3][2][1];
         temp[3][2][0] = cube[3][2][2];
 
-
+        // Update the cube with the temporary cube
+        cube = temp;
     }
 
-
-    int*** right_prime(int*** cube){
+    void right_prime(){
+                
+                
+        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
         
-    int*** temp;
+        // white to green 
+        temp[2][0][2] = cube[0][0][2];
+        temp[2][1][2] = cube[0][1][2];
+        temp[2][2][2] = cube[0][2][2];
 
-    temp = new int **[DIMENSION1];
-
-        for (int i = 0; i < DIMENSION1; i++){
-
-            temp[i] = new int *[DIMENSION2];
-
-            for (int j = 0; j < DIMENSION2; j++){
-                temp[i][j] = new int[DIMENSION3];
-            
-            }
-        }
-
-        for (int i = 0; i < DIMENSION1; i++){
-            for (int j = 0; j < DIMENSION2; j++){
-                for (int k = 0; k < DIMENSION3; k++){
-                temp[i][j][k] = cube[i][j][k];
-                }
-            }
-        }
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-    }
-
-
-
-    int*** left(int*** cube){
+        // green to yellow
+        temp[5][0][2] = cube[2][0][2];
+        temp[5][1][2] = cube[2][1][2];
+        temp[5][2][2] = cube[2][2][2];
         
+        // yellow to blue
+        temp[4][0][2] = cube[5][0][2];
+        temp[4][1][2] = cube[5][1][2];
+        temp[4][2][2] = cube[5][2][2];
 
-    int*** temp;
+        // blue to white 
+        temp[0][0][2] = cube[4][0][2];
+        temp[0][1][2] = cube[4][1][2];
+        temp[0][2][2] = cube[4][2][2];
 
-    temp = new int **[DIMENSION1];
 
-        for (int i = 0; i < DIMENSION1; i++){
+        temp[3][2][0] = cube[3][0][0];
+        temp[3][1][0] = cube[3][0][1];
+        temp[3][2][0] = cube[3][0][2];
 
-            temp[i] = new int *[DIMENSION2];
+        temp[3][2][1] = cube[3][1][0];
+        temp[3][0][1] = cube[3][1][2];
 
-            for (int j = 0; j < DIMENSION2; j++){
-                temp[i][j] = new int[DIMENSION3];
-            
-            }
-        }
+        temp[3][2][2] = cube[3][2][0];
+        temp[3][1][2] = cube[3][2][1];
+        temp[3][0][2] = cube[3][2][2];
 
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
+        cube = temp;
 
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
+    }
 
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
 
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
+    void left(){
+        
+        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
 
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
+        // white to green
+        temp[2][0][0] = cube[0][0][0];
+        temp[2][1][0] = cube[0][1][0];
+        temp[2][2][0] = cube[0][2][0];
 
-        temp[i][j][k] = cube[i][j][k];
+        // green to yellow
+        temp[5][0][0] = cube[2][0][0];
+        temp[5][1][0] = cube[2][1][0];
+        temp[5][2][0] = cube[2][2][0];
+
+        // yellow to blue
+        temp[4][0][0] = cube[5][0][0];
+        temp[4][1][0] = cube[5][1][0];
+        temp[4][2][0] = cube[5][2][0];
+
+        // blue to white 
+        temp[0][0][0] = cube[4][0][0];
+        temp[0][1][0] = cube[4][1][0];
+        temp[0][2][0] = cube[4][2][0];
+
+        // top row 
+        temp[1][0][2] = cube[1][0][0];
+        temp[1][1][2] = cube[1][0][1];
+        temp[1][2][2] = cube[1][0][2];
+
+        // middle
+        temp[1][0][1] = cube[1][1][0];
+        temp[1][1][2] = cube[1][2][1];
+
+        // bottom row 
         temp[i][j][k] = cube[i][j][k];
         temp[i][j][k] = cube[i][j][k];
         temp[i][j][k] = cube[i][j][k];
     }
 
-    int*** left_prime(int ***cube){
+    void left_prime(){
 
     int*** temp;
 
@@ -669,35 +667,35 @@ class RubiksCube {
             
             }
         }
-    }
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
-        temp[i][j][k] = cube[i][j][k];
 
         
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+        temp[i][j][k] = cube[i][j][k];
+    }
+  
 
 };
 
