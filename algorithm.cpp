@@ -6,7 +6,7 @@
 class Node {
 
     public:
-    int*** currentCube;
+    
     int depth;
 
 
