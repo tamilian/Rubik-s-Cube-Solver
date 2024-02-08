@@ -7,6 +7,8 @@
 
 class RubiksCube {
 private:
+    // change to vector
+
     int*** cube;
 
     const int DIMENSION1 = 6;

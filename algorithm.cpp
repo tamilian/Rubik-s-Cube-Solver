@@ -7,7 +7,11 @@ class Node {
 
     public:
     
-    int depth;
+    RubiksCube cubeState;
+    Node* parent;
+    int move;
+
+
 
 
 };

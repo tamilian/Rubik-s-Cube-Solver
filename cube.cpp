@@ -1,10 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stdlib.h>     /* srand, rand */
 
 // each term in the enumeration is given a number, which can be used to access in index of array 
 
-enum Color {WHITE, GREEN, RED, BLUE, ORANGE, YELLOW};
+enum Color {WHITE, ORANGE, GREEN, RED, BLUE, YELLOW};
 
 using namespace std;
 
@@ -75,6 +76,12 @@ public:
         }
     }
 
+    void scrambleCube(vector<vector<vector<int>>>& cube){
+
+        // starts from the starting cube and gives you a scrambled cube, and puts it into txt file\
+        // honestly this is for testing purposes 
+    }
+
     // now we need to come up as many moves as possible and how the transpose 
     // all the moves are with respective to the green center piece
 
@@ -112,7 +119,7 @@ public:
         */
 
     void rotateFace(vector<vector<vector<int>>>& cube, Color color1Start,Color color1Dest, Color color2Start, Color color2Dest, Color color3Start, 
-                    Color color3Dest, Color color4Dest, Color color4Start, Color color5, Color clockwise){
+                    Color color3Dest, Color color4Start, Color color4Dest, Color color5, bool clockwise){
  
         // copy old cube onto new cube
         vector<vector<vector<int>>> temp(cube); // Create a temporary cube
@@ -169,30 +176,30 @@ public:
         // perform clockwise rotation
 
         // update the positions of the elements on the specified face
-        temp[static_cast<int>(color5)][0][2] = cube[static_cast<int>(color5)][0][0];
-        temp[static_cast<int>(color5)][1][2] = cube[static_cast<int>(color5)][0][1];
-        temp[static_cast<int>(color5)][2][2] = cube[static_cast<int>(color5)][0][2];
+        temp[color5][0][2] = cube[color5][0][0];
+        temp[color5][1][2] = cube[color5][0][1];
+        temp[color5][2][2] = cube[color5][0][2];
 
-        temp[static_cast<int>(color5)][0][1] = cube[static_cast<int>(color5)][1][0];
-        temp[static_cast<int>(color5)][2][1] = cube[static_cast<int>(color5)][1][2];
+        temp[color5][0][1] = cube[color5][1][0];
+        temp[color5][2][1] = cube[color5][1][2];
 
-        temp[static_cast<int>(color5)][0][0] = cube[static_cast<int>(color5)][2][0];
-        temp[static_cast<int>(color5)][1][0] = cube[static_cast<int>(color5)][2][1];
-        temp[static_cast<int>(color5)][2][0] = cube[static_cast<int>(color5)][2][2];
+        temp[color5][0][0] = cube[color5][2][0];
+        temp[color5][1][0] = cube[color5][2][1];
+        temp[color5][2][0] = cube[color5][2][2];
     } else {
 
         // perform counterclockwise rotation
         // update the positions of the elements on the specified face
-        temp[static_cast<int>(color5)][2][0] = cube[static_cast<int>(color5)][0][0];
-        temp[static_cast<int>(color5)][1][0] = cube[static_cast<int>(color5)][0][1];
-        temp[static_cast<int>(color5)][0][0] = cube[static_cast<int>(color5)][0][2];
+        temp[color5][2][0] = cube[color5][0][0];
+        temp[color5][1][0] = cube[color5][0][1];
+        temp[color5][0][0] = cube[color5][0][2];
 
-        temp[static_cast<int>(color5)][2][1] = cube[static_cast<int>(color5)][1][0];
-        temp[static_cast<int>(color5)][0][1] = cube[static_cast<int>(color5)][1][2];
+        temp[color5][2][1] = cube[color5][1][0];
+        temp[color5][0][1] = cube[color5][1][2];
 
-        temp[static_cast<int>(color5)][2][2] = cube[static_cast<int>(color5)][2][0];
-        temp[static_cast<int>(color5)][1][2] = cube[static_cast<int>(color5)][2][1];
-        temp[static_cast<int>(color5)][0][2] = cube[static_cast<int>(color5)][2][2];
+        temp[color5][2][2] = cube[color5][2][0];
+        temp[color5][1][2] = cube[color5][2][1];
+        temp[color5][0][2] = cube[color5][2][2];
     }
 
     // copy rotated cube from  temporary cube back to original cube
@@ -203,75 +210,84 @@ public:
 
     // Right move function ( in respect to green face)
     void right() {
-        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
 
+        rotateFace(cube, GREEN, WHITE, WHITE, BLUE ,BLUE, YELLOW, YELLOW, GREEN, RED, true);
 
     }
 
     void right_prime(){
                 
-                
-        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
-
+        rotateFace(cube, WHITE, GREEN, GREEN, YELLOW, YELLOW, BLUE, BLUE, WHITE, RED, false);
 
     }
-
-
     void left(){
         
-        vector<vector<vector<int>>> temp(cube); // Create a temporary cube
-
+        rotateFace(cube, WHITE, GREEN, GREEN, YELLOW, YELLOW,BLUE, BLUE, WHITE, ORANGE, true);
     }
 
     void left_prime(){
 
+        rotateFace(cube, WHITE,BLUE, BLUE, YELLOW, YELLOW, GREEN, GREEN , WHITE, ORANGE, false);
 
     }
 
-    int*** up(int*** cube){
+    void up(){
+
+        rotateFace(cube, GREEN, ORANGE, ORANGE, BLUE, BLUE, RED, RED, GREEN, WHITE, true);
+
 
     }
 
-    int*** up_prime(int*** cube){
+    void up_prime(){
+
+        rotateFace(cube, GREEN,RED, RED, BLUE, BLUE, ORANGE, ORANGE, GREEN, WHITE, false);
+
+    }
+
+    void down(){
+
+        rotateFace(cube, GREEN, RED, RED, BLUE, BLUE, ORANGE, ORANGE, GREEN, YELLOW, true);
+
+
+
+    }
+
+    void down_prime(){
+
+        rotateFace(cube, GREEN , ORANGE, ORANGE, BLUE, BLUE, RED, RED, GREEN, YELLOW, false);
+
         
 
     }
 
-    int*** down(int*** cube){
+    void front(){
 
-
-    }
-
-    int*** down_prime(){
+        rotateFace(cube, WHITE, RED, RED, YELLOW, YELLOW,ORANGE, ORANGE, WHITE, GREEN, true);
         
 
     }
 
-    int*** front(){
-        
+    void front_prime(){
+
+        rotateFace(cube, WHITE,ORANGE, ORANGE, YELLOW, YELLOW, RED, RED, WHITE, GREEN, false); 
 
     }
 
-    int*** front_prime(int*** cube){
-        
+    void back(){
+
+        rotateFace(cube, WHITE ,ORANGE, ORANGE, YELLOW, YELLOW, RED, RED, WHITE, BLUE, true); 
 
     }
 
-    int*** back(int*** cube){
-        
+    void back_prime(){
 
-    }
-
-    int*** back_prime(int*** cube){
-        
-
+        rotateFace(cube, WHITE,RED, RED, YELLOW, YELLOW, ORANGE, ORANGE, WHITE, BLUE, false);
+ 
     }
   
-
 };
 
+int main(){
 
-
-
-
-
+    // test move functions here and print resultant cube
+}
