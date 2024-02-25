@@ -1,7 +1,8 @@
 // A* algorithm with iterative deepening
 
-// we should be looking to write the iterative depeening function first 
-// and then developing heurisitic model 
+// iterative deepening with breadth first seartch
+
+// heuristic model is used with Manhattan Distance(read papers on it)
 
 class Node {
 
@@ -10,8 +11,5 @@ class Node {
     RubiksCube cubeState;
     Node* parent;
     int move;
-
-
-
 
 };
