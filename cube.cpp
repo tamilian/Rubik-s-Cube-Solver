@@ -20,7 +20,6 @@ ostream& operator<<(ostream& os, const Color& color) {
     return os;
 }
 
-
 const int DIMENSION1 = 6;
 const int DIMENSION2 = 3;
 const int DIMENSION3 = 3;
@@ -53,6 +52,7 @@ public:
 
 class RubiksCube {
 private:
+
     CubePiece cube[DIMENSION1][DIMENSION2][DIMENSION3];
 
 public: 
@@ -119,10 +119,11 @@ void takeInput() {
 void originalCoordinateRetrieval(int x, int y, int z){
 
     // check if input is within bounds
-
     if (x < 0 || x >= DIMENSION1 || y < 0 || y >= DIMENSION2 || z < 0 || z >= DIMENSION3){
         cerr << "Your dimensions are out of bounds" << endl;
     }
+
+    // simplify 
 
     tuple<int, int, int> originalCords = cube[x][y][z].originalCoordinates;
 
@@ -131,7 +132,6 @@ void originalCoordinateRetrieval(int x, int y, int z){
     cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
         << " are " << endl << 
         "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
-
 }
 
 void currentCoordinateRetrieval(int x, int y, int z){
@@ -172,9 +172,13 @@ void printCube() const {
 
  
 void rotateFaceVertical(Color color1Start, Color color1Dest, 
+
     Color color2Start, Color color2Dest, 
+
     Color color3Start, Color color3Dest, 
+
     Color color4Start, Color color4Dest, 
+
     Color color5, int kValue, bool clockwise) {
 
 
@@ -292,9 +296,13 @@ void rotateFaceVertical(Color color1Start, Color color1Dest,
 }
 
 void rotateFaceHorizontal(Color color1Start, 
+
     Color color1Dest, Color color2Start,
+
     Color color2Dest,  Color color3Start,
+
     Color color3Dest, Color color4Start, Color color4Dest, 
+
     Color color5, int jValue,  bool clockwise) {
 
     CubePiece temp[DIMENSION1][DIMENSION2][DIMENSION3]; // Create a temporary CubePiece array
@@ -403,7 +411,6 @@ void rotateFaceHorizontal(Color color1Start,
     }
 }
 
-
     void rotateFaceSpecialClockwise(
     Color color1Start, Color color1Dest, int color1JInitial, int color1KFinal,  
 
@@ -497,7 +504,7 @@ void rotateFaceHorizontal(Color color1Start,
 
     Color color3Start,Color color3Dest, int color3JStart, int color3KEnd,
 
-    Color color4Start,Color color4Dest, int color4KStart, int color4JStart, 
+    Color color4Start,Color color4Dest, int color4KStart, int color4JEnd, 
 
     Color color5){
  
@@ -532,8 +539,8 @@ void rotateFaceHorizontal(Color color1Start,
     // move 4
 
         for (int j = 0; j < 3; j++) {
-            temp[static_cast<int>(color4Dest)][color4JStart][j] = cube[static_cast<int>(color4Start)][j][color4KStart];
-            temp[static_cast<int>(color4Dest)][color4JStart][j].currentCoordinates = make_tuple(static_cast<int>(color4Dest), color4JStart, j);
+            temp[static_cast<int>(color4Dest)][color4JEnd][j] = cube[static_cast<int>(color4Start)][j][color4KStart];
+            temp[static_cast<int>(color4Dest)][color4JEnd][j].currentCoordinates = make_tuple(static_cast<int>(color4Dest), color4JEnd, j);
 
         }  
 
@@ -607,7 +614,6 @@ void rotateFaceHorizontal(Color color1Start,
         rotateFaceHorizontal(GREEN , ORANGE, ORANGE, BLUE, BLUE, RED, RED, GREEN, YELLOW, 2, false);
     }
 
-    
 
     void front(){ 
         rotateFaceSpecialClockwise(WHITE, RED, 2, 0, RED, YELLOW, 0, 0, YELLOW, ORANGE, 2, 0, ORANGE, WHITE,2, 2, GREEN);
@@ -617,15 +623,14 @@ void rotateFaceHorizontal(Color color1Start,
         rotateFaceSpecialClockwise(WHITE, ORANGE, 0, 0, ORANGE, YELLOW, 0, 2, YELLOW, RED, 2, 2, RED, WHITE, 2, 0, BLUE);
     }
 
-/*   these are the counterclockwise
+  // these are the counterclockwise
     void front_prime(){ // special case
-        rotateFaceSpecialCounterClockWise(cube, WHITE,ORANGE, ORANGE, YELLOW, YELLOW, RED, RED, WHITE, GREEN, false); 
+        rotateFaceSpecialCounterClockWise(WHITE, ORANGE, 2, 2, ORANGE, YELLOW, 0, 2, YELLOW, RED, 2, 0, RED, WHITE, 0, 2, GREEN); 
     }
 
     void back_prime(){ // special case
-        rotateFaceSpecialCounterClockWise(cube, WHITE,RED, RED, YELLOW, YELLOW, ORANGE, ORANGE, WHITE, BLUE, false);
+        rotateFaceSpecialCounterClockWise(WHITE, RED, 2, 0, RED, YELLOW, 2, 2, YELLOW, ORANGE, 2, 0, ORANGE, WHITE, 0, 0, BLUE);
     }
-    */
 };
 
 int main() {
@@ -634,8 +639,8 @@ int main() {
     cube.takeInput();
 
     // Perform right move
-    cube.back();
-    cout << "After back move:" << endl;
+    cube.back_prime();
+    cout << "After back prime move:" << endl;
     cube.printCube();
 /*
     // Perform right prime move
@@ -655,7 +660,7 @@ int main() {
 */
     // Retrieve original and current coordinates
 
-    cube.originalCoordinateRetrieval(2, 1, 2);
+    cube.originalCoordinateRetrieval(3, 2, 2);
     // cube.currentCoordinateRetrieval(0, 0, 0);
 
     return 0;

@@ -98,6 +98,15 @@ public:
     void down();
 
     void down_prime();
+
+    void front();
+
+    void front_prime();
+
+    void back();
+    
+    void back_prime();
+
 };
 
 #endif // CUBE_H
