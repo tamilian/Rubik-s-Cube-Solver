@@ -1,6 +1,7 @@
 #include "cube.h"
 #include <iostream>
 #include <array>
+#include <vector>
 #include <stack>
 #include <queue>
 #include <cstring>
@@ -78,6 +79,7 @@ public:
         for (int i = 0; i < DIMENSION1; i++) {
             for (int j = 0; j < DIMENSION2; j++) {
                 for (int k = 0; k < DIMENSION3; k++) {
+                    // remember you did operator overloading, and then access color attribute for cube piece object
                     if (node->currentConfiguration(i, j, k).color != solvedCube[i][j][k]) {
                         return false;
                     }
@@ -85,25 +87,6 @@ public:
             }
         }
         return true;
-    }
-
-    void generateChildNodes(Node* node, int depth){
-        if (depth == 0) {
-            return; // we have reached the maximum depth of 30
-        }
-
-        // this for loop will add 12 child nodes for each node that is put through parameter
-        for (int move = right_move; move <= back_prime_move; move++) {
-
-            Node* child = new Node();
-            
-            child -> move = moveNames[move]; // this attribute for object node holds which move was done to the cube config
-            child -> prev = node; // here we are linking the child nodes to the 
-
-            applyMoves(child, static_cast<Moves>(move));
-
-            generateChildNodes(child, depth - 1);
-        }
     }
 
     void applyMoves(Node* node, Moves move) {
@@ -141,6 +124,53 @@ public:
         node->currentConfiguration = cube;
     }
 
+    void generateChildNodes(Node* node){
+
+        // this for loop will add 12 child nodes for each node that is put through parameter
+        for (int move = right_move; move <= back_prime_move; move++) {
+
+            Node* child = new Node();
+            
+            child -> move = moveNames[move]; // this attribute for object node holds which move was done to the cube config
+            child -> prev = node; // here we are linking the child nodes to the 
+
+            applyMoves(child, static_cast<Moves>(move));
+
+        }
+    }
+
+
+void printStack(stack<string> myStack) {
+    cout << "These are the moves to solve the cube: " << endl;
+    int move = 1;
+    while (!myStack.empty()) {
+        cout << "Move " << move << " is " << myStack.top() << '.' << endl;
+        myStack.pop();
+        move++;
+    }
+}
+
+    void backwards_search(Node* node, int depth){
+
+        Node* current = node;
+        stack<string> myMoves;
+
+        while(depth != 0){
+            
+        myMoves.push(node -> move);
+
+        current = current -> prev;
+        depth--;
+            
+        }
+
+        // after we have appended everything to the stack, call print stack function
+        printStack(myMoves);
+
+
+    }
+
+
     void ID_BFS(){
 
         // create the parent node by calling function, this is the starting point
@@ -164,21 +194,23 @@ public:
 
                 // this is where we check each node and see if it is solved
                 if (isSolved(current)) {
+                    // run the backwards serch alorithm, print the stack and return
+                    backwards_search(current, depth); 
                     return;
                 }
                 
                 // so if it is not solved, then we can generate child nodes for that node
-                generateChildNodes(current, depth);
+                generateChildNodes(current);
 
                 for (int move = right_move; move <= back_prime_move; move++) {
 
                     Node* child = new Node();
+
                     child -> move = moveNames[move];
                     child -> prev = current;
 
                     applyMoves(child, static_cast<Moves>(move));
                     nodesQueue.push(child);
-
                 }
             }
         }
