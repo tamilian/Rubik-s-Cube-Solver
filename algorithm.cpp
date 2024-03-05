@@ -2,9 +2,10 @@
 #include <iostream>
 #include <array>
 #include <stack>
+#include <queue>
 #include <cstring>
 
-
+using namespace std;
 
 enum Moves {right_move, right_prime_move, left_move, left_prime_move, up_move, up_prime_move, down_move,
  down_prime_move, front_move, front_prime_move, back_move, back_prime_move};
@@ -14,12 +15,19 @@ const int NUM_OF_MOVES = 12;
 
 class Node {
 private:
+
+
     RubiksCube currentConfiguration;
+
+    // this is where we hold the info ont the move, to access when we bfs 
     string move;
+
+    // pointers to node before so we can traverse the tree once we get to solved state
     Node* prev;
-    Node* next;
 
 public:
+
+    // array to hold all the moves
     string moveNames[NUM_OF_MOVES] = {
         "right", 
         "right_prime", 
@@ -35,6 +43,7 @@ public:
         "back_prime"
     };
 
+    // solved cube, just to note, the enums are ints, that
     int solvedCube[6][3][3] = {
         // Up/White
         {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
@@ -50,26 +59,26 @@ public:
         {{5, 5, 5}, {5, 5, 5}, {5, 5, 5}}
     };
 
-    Node() : prev(nullptr), next(nullptr) {}
+    Node() : prev(nullptr) {}
 
     Node* createParent() {
+
         Node* parent = new Node();
         RubiksCube cube;
 
         cube.takeInput();
-
-        parent->currentConfiguration = cube;
+        parent -> currentConfiguration = cube;
 
         return parent;
     }
 
+    // this function checks the current configuration
     bool isSolved(Node* node) {
-
+        
         for (int i = 0; i < DIMENSION1; i++) {
             for (int j = 0; j < DIMENSION2; j++) {
                 for (int k = 0; k < DIMENSION3; k++) {
-                    if (node->currentConfiguration(i, j, k) != solvedCube[i][j][k]) {
-
+                    if (node->currentConfiguration(i, j, k).color != solvedCube[i][j][k]) {
                         return false;
                     }
                 }
@@ -78,19 +87,18 @@ public:
         return true;
     }
 
-    void generateChildNodes(Node* node, int depth) {
+    void generateChildNodes(Node* node, int depth){
         if (depth == 0) {
             return; // we have reached the maximum depth of 30
         }
 
-        // Implement logic to generate child nodes
-        // for each move (e.g., right, left, up, down, front, back), create a new child node
-        for (int move = right_move; move <= back_prime_move; ++move) {
-            Node* child = new Node();
+        // this for loop will add 12 child nodes for each node that is put through parameter
+        for (int move = right_move; move <= back_prime_move; move++) {
 
-            // string attribute to hold which move has been acted on it 
-            child->move = moveNames[move];
-            child->prev = node;
+            Node* child = new Node();
+            
+            child -> move = moveNames[move]; // this attribute for object node holds which move was done to the cube config
+            child -> prev = node; // here we are linking the child nodes to the 
 
             applyMoves(child, static_cast<Moves>(move));
 
@@ -99,10 +107,10 @@ public:
     }
 
     void applyMoves(Node* node, Moves move) {
-        RubiksCube cube = node->currentConfiguration;
+
+        RubiksCube cube = node -> currentConfiguration;
 
         switch(move) {
-
             case right_move:
                 cube.right(); break;
             case right_prime_move:
@@ -118,22 +126,67 @@ public:
             case down_move:
                 cube.down(); break;
             case down_prime_move:
-                cube.down_prime();
+                cube.down_prime(); break;
             case front_move:
-                cube.front();
+                cube.front(); break;
             case front_prime_move:
-                cube.front_prime();
+                cube.front_prime(); break;
             case back_move:
-                cube.back();
+                cube.back(); break;
             case back_prime_move:
-                cube.back_prime();
-       }
+                cube.back_prime(); break;
+        }
 
+        // after transposition is made, set it equal back to cube
         node->currentConfiguration = cube;
+    }
+
+    void ID_BFS(){
+
+        // create the parent node by calling function, this is the starting point
+        Node* start = createParent();
+        queue<Node*> nodesQueue;
+        // first item is the start node (it holds the pointer, and as we pop, we can access the moves needed)
+        nodesQueue.push(start);
+
+
+        // max depth of 30, the solution should be solved within then
+        for (int depth = 0; depth <= MAX_DEPTH; depth++) {
+
+            int levelSize = nodesQueue.size();
+
+            // we will use a queue to hold all the current nodes at that node and iterate through them 
+            // we need to first check if it solved, and if it is not, create the child nodes for that respective 
+
+            for (int i = 0; i < levelSize; i++) {
+                Node* current = nodesQueue.front();
+                nodesQueue.pop();
+
+                // this is where we check each node and see if it is solved
+                if (isSolved(current)) {
+                    return;
+                }
+                
+                // so if it is not solved, then we can generate child nodes for that node
+                generateChildNodes(current, depth);
+
+                for (int move = right_move; move <= back_prime_move; move++) {
+
+                    Node* child = new Node();
+                    child -> move = moveNames[move];
+                    child -> prev = current;
+
+                    applyMoves(child, static_cast<Moves>(move));
+                    nodesQueue.push(child);
+
+                }
+            }
+        }
+        // solution not found within the depth limit
+        // handle accordingly
     }
 };
 
 int main() {
-    // Add your main logic here
     return 0;
 }

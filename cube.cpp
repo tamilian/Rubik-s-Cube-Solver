@@ -57,6 +57,8 @@ private:
     CubePiece cube[DIMENSION1][DIMENSION2][DIMENSION3];
 
 public: 
+
+    // default constructor
     RubiksCube() {
 
         // initialize the cube with default colors and coordinates
