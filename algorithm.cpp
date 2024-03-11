@@ -12,12 +12,11 @@ enum Moves {right_move, right_prime_move, left_move, left_prime_move, up_move, u
  down_prime_move, front_move, front_prime_move, back_move, back_prime_move};
 
 const int MAX_DEPTH = 30; // eventually work to 20 moves or less (optimize algo)
+// o(12^n)
 const int NUM_OF_MOVES = 12;
 
 class Node {
 private:
-
-
     RubiksCube currentConfiguration;
 
     // this is where we hold the info ont the move, to access when we bfs 
@@ -25,7 +24,6 @@ private:
 
     // pointers to node before so we can traverse the tree once we get to solved state
     Node* prev;
-
 public:
 
     // array to hold all the moves
@@ -67,7 +65,7 @@ public:
         Node* parent = new Node();
         RubiksCube cube;
 
-        cube.takeInput();
+        cube.takeInput("input.txt");
         parent -> currentConfiguration = cube;
 
         return parent;
@@ -195,6 +193,7 @@ void printStack(stack<string> myStack) {
                 // this is where we check each node and see if it is solved
                 if (isSolved(current)) {
                     // run the backwards serch alorithm, print the stack and return
+                    cout << "Solution found!" << endl;
                     backwards_search(current, depth); 
                     return;
                 }
@@ -214,11 +213,15 @@ void printStack(stack<string> myStack) {
                 }
             }
         }
-        // solution not found within the depth limit
-        // handle accordingly
+        throw runtime_error("Solution not found within the depth limit");
     }
 };
 
 int main() {
-    return 0;
+    
+    RubiksCube cube;  
+
+    cube.takeInput("input.txt");  
+
+
 }

@@ -79,14 +79,12 @@ public:
         }
         return cube[i][j][k];
     }
-
-void takeInput() {
-
-    ifstream inputFile("input.txt");
-    if (!inputFile.is_open()) {
-        cerr << "Error: Unable to open file input.txt" << endl;
-        return;
-    }
+   void takeInput(const string& filename) {
+        ifstream inputFile(filename);
+        if (!inputFile.is_open()) {
+            cerr << "Error: Unable to open file " << filename << std::endl;
+            return;
+        }
 
     // Initialize the cube with colors from the input file
 
@@ -641,42 +639,58 @@ void rotateFaceHorizontal(Color color1Start,
 
     }
 
-    void scramble(RubiksCube cube) {
+    void scramble() {
         // basically scramble the cube up 100 times (randomly choosing the moves)
 
-        for (int i = 0; i < 100; i++){
+        // open a file for writing
+        ofstream outputFile("scramble_moves.txt");
 
-            // use rand, then use modulus and it will give us random numbers from 0 to 11
+        RubiksCube solvedState;
 
-            int move = rand() % 12;
+        takeInput("solution.txt");
 
-        switch(move) {
-            case 0:
-                cube.right(); break;
-            case 1:
-                cube.right_prime(); break;
-            case 2:
-                cube.left(); break;
-            case 3:
-                cube.left_prime(); break;
-            case 4:
-                cube.up(); break;
-            case 5:
-                cube.up_prime(); break;
-            case 6:
-                cube.down(); break;
-            case 7:
-                cube.down_prime(); break;
-            case 8:
-                cube.front(); break;
-            case 9:
-                cube.front_prime(); break;
-            case 10:
-                cube.back(); break;
-            case 11:
-                cube.back_prime(); break;
-        }
+        if(outputFile.is_open()){
 
+            for (int i = 0; i < 100; i++){
+
+                // use rand, then use modulus and it will give us random numbers from 0 to 11
+                int move = rand() % 12;
+
+            switch(move) {
+                case 0:
+                    solvedState.right(); break;
+                case 1:
+                    solvedState.right_prime(); break;
+                case 2:
+                    solvedState.left(); break;
+                case 3:
+                    solvedState.left_prime(); break;
+                case 4:
+                    solvedState.up(); break;
+                case 5:
+                    solvedState.up_prime(); break;
+                case 6:
+                    solvedState.down(); break;
+                case 7:
+                    solvedState.down_prime(); break;
+                case 8:
+                    solvedState.front(); break;
+                case 9:
+                    solvedState.front_prime(); break;
+                case 10:
+                    solvedState.back(); break;
+                case 11:
+                    solvedState.back_prime(); break;
+            }
+            }
+
+            for(int i = 0; i < DIMENSION1; i++){
+                for(int j = 0; j < DIMENSION2; j++){
+                    for(int k = 0; k < DIMENSION3; k++){
+                        outputFile << static_cast<int>(solvedState(i,j,k).color) << " ";
+                    }
+                }
+            }
 
         }
 }
@@ -685,7 +699,7 @@ void rotateFaceHorizontal(Color color1Start,
 int main() {
     RubiksCube cube;
 
-    cube.takeInput();
+    cube.takeInput("solution.txt");
 
     // Perform right move
     cube.back_prime();
@@ -714,4 +728,3 @@ int main() {
 
     return 0;
 }
-
