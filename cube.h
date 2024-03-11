@@ -71,6 +71,8 @@ public:
 
     void printCube() const;
 
+    void scramble();
+
     void rotateFaceVertical(Color color1Start, Color color1Dest, 
         Color color2Start, Color color2Dest, 
         Color color3Start, Color color3Dest, 

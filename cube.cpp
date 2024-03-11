@@ -1,9 +1,10 @@
-
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <stdexcept>
 #include <map>
 #include <tuple>
+
 using namespace std;
 
 enum Color {WHITE, ORANGE, GREEN, RED, BLUE, YELLOW};
@@ -42,6 +43,7 @@ public:
 
     // Inside the CubePiece class definition
     CubePiece& operator=(const CubePiece& other) {
+
         if (this != &other) { // self-assignment check
             color = other.color;
             originalCoordinates = other.originalCoordinates;
@@ -634,6 +636,50 @@ void rotateFaceHorizontal(Color color1Start,
     void back_prime(){ // special case
         rotateFaceSpecialCounterClockWise(WHITE, RED, 2, 0, RED, YELLOW, 2, 2, YELLOW, ORANGE, 2, 0, ORANGE, WHITE, 0, 0, BLUE);
     }
+
+    void cube_to_txt(RubiksCube &cube){
+
+    }
+
+    void scramble(RubiksCube cube) {
+        // basically scramble the cube up 100 times (randomly choosing the moves)
+
+        for (int i = 0; i < 100; i++){
+
+            // use rand, then use modulus and it will give us random numbers from 0 to 11
+
+            int move = rand() % 12;
+
+        switch(move) {
+            case 0:
+                cube.right(); break;
+            case 1:
+                cube.right_prime(); break;
+            case 2:
+                cube.left(); break;
+            case 3:
+                cube.left_prime(); break;
+            case 4:
+                cube.up(); break;
+            case 5:
+                cube.up_prime(); break;
+            case 6:
+                cube.down(); break;
+            case 7:
+                cube.down_prime(); break;
+            case 8:
+                cube.front(); break;
+            case 9:
+                cube.front_prime(); break;
+            case 10:
+                cube.back(); break;
+            case 11:
+                cube.back_prime(); break;
+        }
+
+
+        }
+}
 };
 
 int main() {
