@@ -17,7 +17,7 @@ const int NUM_OF_MOVES = 12;
 class Node {
 private:
 
-
+//comint
     RubiksCube currentConfiguration;
 
     // this is where we hold the info ont the move, to access when we bfs 
