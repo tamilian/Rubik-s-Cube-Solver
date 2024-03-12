@@ -132,8 +132,8 @@ void originalCoordinateRetrieval(int x, int y, int z){
 
     // use get method in tuple to access each original coordinate
 
-    cout << "Original Coordinates: (" << x << ", " << y <<  ", " << z <<  ") "
-        << "  -> " << " Current Coordinates: "  
+    cout << "Current Coordinates: (" << x << ", " << y <<  ", " << z <<  ") "
+        << "  -> " << " Original Coordinates: "  
         "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
 }
 
@@ -907,8 +907,8 @@ int main() {
     cube.takeInput("solution.txt");
 
     // Perform right move
-    cube.back();
-    cout << "After back move:" << endl;
+    cube.right();
+    cout << "After right move:" << endl;
 
     cube.printOriginalAndCurrentCoordinates(cube);
 
