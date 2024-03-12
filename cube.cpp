@@ -132,8 +132,8 @@ void originalCoordinateRetrieval(int x, int y, int z){
 
     // use get method in tuple to access each original coordinate
 
-    cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
-        << " are " << endl << 
+    cout << "Original Coordinates: (" << x << ", " << y <<  ", " << z <<  ") "
+        << "  -> " << " Current Coordinates: "  
         "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
 }
 
@@ -455,8 +455,8 @@ void rotateFaceHorizontal(Color color1Start,
         }
 
     // move 2
+        int a = 2;
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color2Dest)][color2JEnd][a] = cube[static_cast<int>(color2Start)][j][color2KStart];
             temp[static_cast<int>(color2Dest)][color2JEnd][a].currentCoordinates = make_tuple(static_cast<int>(color2Dest), color2JEnd,a);
             a--;
@@ -469,8 +469,8 @@ void rotateFaceHorizontal(Color color1Start,
             temp[static_cast<int>(color3Dest)][j][color3JEnd].currentCoordinates = make_tuple(static_cast<int>(color3Dest), j,color3JEnd );
         }
     // move 4
+        a = 2;
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color4Dest)][color4JEnd][a] = cube[static_cast<int>(color4Start)][j][color4KStart];
             temp[static_cast<int>(color4Dest)][color4JEnd][a].currentCoordinates = make_tuple(static_cast<int>(color4Dest), color4JEnd,a);
             a--;
@@ -535,10 +535,10 @@ void rotateFaceHorizontal(Color color1Start,
             }
         }
 
-    // move 1 (white face start)
+    // move 1 (white face start) , fucks sake, the a is not working, why??
 
+        int a = 2;
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color1Dest)][a][color1KEnd] = cube[static_cast<int>(color1Start)][color1JStart][j];
             temp[static_cast<int>(color1Dest)][a][color1KEnd].currentCoordinates = make_tuple(static_cast<int>(color1Dest), a, color1KEnd);
             a--;
@@ -551,9 +551,9 @@ void rotateFaceHorizontal(Color color1Start,
         }
 
     // move 3
-
+        
+        a = 2;
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color3Dest)][a][color3KEnd] = cube[static_cast<int>(color3Start)][color3JStart][j];
             temp[static_cast<int>(color3Dest)][a][color3KEnd].currentCoordinates = make_tuple(static_cast<int>(color3Dest), a, color3KEnd);
             a--;
@@ -626,9 +626,9 @@ void rotateFaceHorizontal(Color color1Start,
 
     // move 1: always start from white
     // back prime: white to red
-    // front prime: 
+    // front prime:
+        int a = 2; 
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color1Dest)][a][color1KEnd] = cube[static_cast<int>(color1Start)][color1JStart][j];
             temp[static_cast<int>(color1Dest)][a][color1KEnd].currentCoordinates = make_tuple(static_cast<int>(color1Dest), a, color1KEnd);
         }
@@ -636,17 +636,15 @@ void rotateFaceHorizontal(Color color1Start,
     // back prime: red to yellow
     // front prime:  
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color2Dest)][color2JEnd][j] = cube[static_cast<int>(color2Start)][j][color2KStart];
             temp[static_cast<int>(color2Dest)][color2JEnd][j].currentCoordinates = make_tuple(static_cast<int>(color2Dest), color2JEnd, j);
-            a--; // this should decrement to 0
         }
 
     // move 3
     // back prime: yellow to orange
     // front prime: 
+        a = 2;
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color3Dest)][a][color3KEnd] = cube[static_cast<int>(color3Start)][color3JStart][j];
             temp[static_cast<int>(color3Dest)][a][color3KEnd].currentCoordinates = make_tuple(static_cast<int>(color3Dest),a ,color3KEnd);
             a--;
@@ -729,10 +727,10 @@ void rotateFaceHorizontal(Color color1Start,
         }
     // move 2 (a variable)
     // back prime: red to yellow
-    // front prime:  
+    // front prime:
+        int a = 2;  
         for (int j = 0; j < 3; j++) {
             // logic error is here 3,0,2 should be transferred to 5,2,2
-            int a = 2;
             temp[static_cast<int>(color2Dest)][color2JEnd][a] = cube[static_cast<int>(color2Start)][j][color2KStart];
             temp[static_cast<int>(color2Dest)][color2JEnd][a].currentCoordinates = make_tuple(static_cast<int>(color2Dest), color2JEnd, a);
             a--; // this should decrement to 0
@@ -747,9 +745,9 @@ void rotateFaceHorizontal(Color color1Start,
         }
     // move 4 (a variable)
     // back prime: orange to white
-    // front prime: 
+    // front prime:
+        a = 2; 
         for (int j = 0; j < 3; j++) {
-            int a = 2;
             temp[static_cast<int>(color4Dest)][color4JEnd][a] = cube[static_cast<int>(color4Start)][j][color4KStart];
             temp[static_cast<int>(color4Dest)][color4JEnd][a].currentCoordinates = make_tuple(static_cast<int>(color4Dest), color4JEnd, a);
             a--;
@@ -909,30 +907,10 @@ int main() {
     cube.takeInput("solution.txt");
 
     // Perform right move
-    cube.back_prime();
-    cout << "After back prime move:" << endl;
-    cube.printCube();
+    cube.back();
+    cout << "After back move:" << endl;
 
-/*
-    // Perform right prime move
-    cube.right_prime();
-    cout << "After right prime move:" << endl;
-    cube.printCube();
-
-    // Perform left move
-    cube.left();
-    cout << "After left move:" << endl;
-    cube.printCube();
-
-    // Perform left prime move
-    cube.left_prime();
-    cout << "After left prime move:" << endl;
-    cube.printCube();
-*/
-    // Retrieve original and current coordinates
-
-    cube.originalCoordinateRetrieval(3, 2, 2);
-    // cube.currentCoordinateRetrieval(0, 0, 0);
+    cube.printOriginalAndCurrentCoordinates(cube);
 
     return 0;
 }
