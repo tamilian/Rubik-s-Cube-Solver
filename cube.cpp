@@ -58,6 +58,23 @@ private:
 
     CubePiece cube[DIMENSION1][DIMENSION2][DIMENSION3];
 
+    void originalCoordinateRetrieval(int x, int y, int z){
+
+    // check if input is within bounds
+    if (x < 0 || x >= DIMENSION1 || y < 0 || y >= DIMENSION2 || z < 0 || z >= DIMENSION3){
+        cerr << "Your dimensions are out of bounds" << endl;
+    }
+
+    // simplify 
+
+    tuple<int, int, int> originalCords = cube[x][y][z].originalCoordinates;
+
+    // use get method in tuple to access each original coordinate
+
+    cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
+        << " are " << "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
+}
+
 public: 
 
     // default constructor
@@ -119,23 +136,7 @@ public:
     inputFile.close();
 }
 
-void originalCoordinateRetrieval(int x, int y, int z){
 
-    // check if input is within bounds
-    if (x < 0 || x >= DIMENSION1 || y < 0 || y >= DIMENSION2 || z < 0 || z >= DIMENSION3){
-        cerr << "Your dimensions are out of bounds" << endl;
-    }
-
-    // simplify 
-
-    tuple<int, int, int> originalCords = cube[x][y][z].originalCoordinates;
-
-    // use get method in tuple to access each original coordinate
-
-    cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
-        << " are " << endl << 
-        "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
-}
 
 void currentCoordinateRetrieval(int x, int y, int z){
 
@@ -150,8 +151,7 @@ void currentCoordinateRetrieval(int x, int y, int z){
     // use get method in tuple to access each original coordinate
 
     cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
-        << " are " << endl << 
-        "(" << get<0>(currentCords) << ", " << get<1>(currentCords) << ", " << get<2>(currentCords) << "). " << endl;
+        << "are " << "(" << get<0>(currentCords) << ", " << get<1>(currentCords) << ", " << get<2>(currentCords) << "). " << endl;
 
 }
 
@@ -169,6 +169,21 @@ void printCube() const {
     }
 }  
 
+
+
+void printOriginalAndCurrentCoordinates(RubiksCube &c){
+    for(int i = 0; i < DIMENSION1; i++){
+        //std::cout << "For Face " << c[i][0][0].color << std::endl;
+        std::cout << "----------------------------------" << std::endl;
+        for(int j = 0; j < DIMENSION2; j++){
+            for(int k = 0; k < DIMENSION3; k++){
+                c.originalCoordinateRetrieval(i,j,k);
+                
+            }
+        }
+        std::cout << "----------------------------------" << std::endl;
+    }
+}
 
     // all the moves are with respective to the green center piece
     // no need to add the cube parameter as that is already private member in object
@@ -702,8 +717,8 @@ int main() {
     cube.takeInput("solution.txt");
 
     // Perform right move
-    cube.back_prime();
-    cout << "After back prime move:" << endl;
+    cube.front_prime();
+    cout << "After front prime move:" << endl;
     cube.printCube();
 /*
     // Perform right prime move
@@ -722,8 +737,8 @@ int main() {
     cube.printCube();
 */
     // Retrieve original and current coordinates
-
-    cube.originalCoordinateRetrieval(3, 2, 2);
+    cube.printOriginalAndCurrentCoordinates(cube);
+    //cube.originalCoordinateRetrieval(3, 2, 2);
     // cube.currentCoordinateRetrieval(0, 0, 0);
 
     return 0;
