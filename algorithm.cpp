@@ -1,4 +1,5 @@
 #include "cube.h"
+
 #include <iostream>
 #include <array>
 #include <vector>
@@ -222,6 +223,8 @@ int main() {
     RubiksCube cube;  
 
     cube.takeInput("input.txt");  
+
+    
 
 
 }
