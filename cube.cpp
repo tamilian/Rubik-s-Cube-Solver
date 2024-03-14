@@ -184,15 +184,16 @@ void printCube() const {
     // no need to add the cube parameter as that is already private member in object
 
  
-void rotateFaceVertical(Color color1Start, Color color1Dest, 
+void rotateFaceVertical(
+    Color color1Start, Color color1Dest, int color1KStart, int color1KEnd,
 
-    Color color2Start, Color color2Dest, 
+    Color color2Start, Color color2Dest, int color2KStart, int color2KEnd,
 
-    Color color3Start, Color color3Dest, 
+    Color color3Start, Color color3Dest, int color3KStart, int color3KEnd,
 
-    Color color4Start, Color color4Dest, 
+    Color color4Start, Color color4Dest, int color4KStart, int color4KEnd,
 
-    Color color5, int kValue, bool clockwise) {
+    Color color5, bool clockwise) {
 
 
     CubePiece temp[DIMENSION1][DIMENSION2][DIMENSION3]; // Create a temporary CubePiece array
@@ -206,30 +207,34 @@ void rotateFaceVertical(Color color1Start, Color color1Dest,
         }
     }
 
-
+    // SPECIAL CASE
+    int a = 2;
     for (int j = 0; j < 3; j++) {
-        temp[static_cast<int>(color1Dest)][j][kValue] = cube[static_cast<int>(color1Start)][j][kValue];
-        temp[static_cast<int>(color1Dest)][j][kValue].currentCoordinates = make_tuple(static_cast<int>(color1Dest), j, kValue);
+        temp[static_cast<int>(color1Dest)][a][color1KEnd] = cube[static_cast<int>(color1Start)][j][color1KStart];
+        temp[static_cast<int>(color1Dest)][a][color1KEnd].currentCoordinates = make_tuple(static_cast<int>(color1Dest), a, color1KEnd);
+        a--;
+    }
 
+    // SPECIAL CASE 
+    a = 2;
+    for (int j = 0; j < 3; j++) {
+        temp[static_cast<int>(color2Dest)][a][color2KEnd] = cube[static_cast<int>(color2Start)][j][color2KStart];
+        temp[static_cast<int>(color2Dest)][a][color2KEnd].currentCoordinates = make_tuple(static_cast<int>(color2Dest), a,color2KEnd);
+        a--;
     }
 
     for (int j = 0; j < 3; j++) {
-        temp[static_cast<int>(color2Dest)][j][kValue] = cube[static_cast<int>(color2Start)][j][kValue];
-        temp[static_cast<int>(color2Dest)][j][kValue].currentCoordinates = make_tuple(static_cast<int>(color2Dest), j, kValue);
+        temp[static_cast<int>(color3Dest)][j][color3KEnd] = cube[static_cast<int>(color3Start)][j][color3KStart];
+        temp[static_cast<int>(color3Dest)][j][color3KEnd].currentCoordinates = make_tuple(static_cast<int>(color3Dest), j, color3KEnd);
     }
 
     for (int j = 0; j < 3; j++) {
-        temp[static_cast<int>(color3Dest)][j][kValue] = cube[static_cast<int>(color3Start)][j][kValue];
-        temp[static_cast<int>(color3Dest)][j][kValue].currentCoordinates = make_tuple(static_cast<int>(color3Dest), j, kValue);
-    }
-
-    for (int j = 0; j < 3; j++) {
-        temp[static_cast<int>(color4Dest)][j][kValue] = cube[static_cast<int>(color4Start)][j][kValue];
-        temp[static_cast<int>(color4Dest)][j][kValue].currentCoordinates = make_tuple(static_cast<int>(color4Dest), j, kValue);
+        temp[static_cast<int>(color4Dest)][j][color4KEnd] = cube[static_cast<int>(color4Start)][j][color4KStart];
+        temp[static_cast<int>(color4Dest)][j][color4KEnd].currentCoordinates = make_tuple(static_cast<int>(color4Dest), j, color4KEnd);
 
     }
 
-    if (clockwise) {
+    if (clockwise == true) {
         // perform clockwise rotation
         // update the positions of the elements on the specified face
         temp[static_cast<int>(color5)][0][2] = cube[static_cast<int>(color5)][0][0];
@@ -265,7 +270,7 @@ void rotateFaceVertical(Color color1Start, Color color1Dest,
         temp[static_cast<int>(color5)][2][0] = cube[static_cast<int>(color5)][2][2];
         temp[static_cast<int>(color5)][2][0].currentCoordinates = make_tuple(static_cast<int>(color5), 2, 0);
 
-    } else {
+    } else if (clockwise == false){
         // perform counterclockwise rotation
         // update the positions of the elements on the specified face
         temp[static_cast<int>(color5)][2][0] = cube[static_cast<int>(color5)][0][0];
@@ -794,19 +799,19 @@ void rotateFaceHorizontal(Color color1Start,
 
     // Right move function ( in respect to green face)
     void right() { // vertical funciton
-        rotateFaceVertical(GREEN, WHITE, WHITE, BLUE ,BLUE, YELLOW, YELLOW, GREEN, RED, 2, true);
+        rotateFaceVertical(WHITE, BLUE, 2, 0, BLUE, YELLOW, 0, 2, YELLOW, GREEN, 2, 2, GREEN, WHITE, 2, 2, RED, true);
     }
 
     void right_prime(){    // vertical function
-        rotateFaceVertical(WHITE, GREEN, GREEN, YELLOW, YELLOW, BLUE, BLUE, WHITE, RED, 2, false);
+        rotateFaceVertical(YELLOW, BLUE, 2,0, BLUE, WHITE, 0,2, WHITE, GREEN, 2, 2, GREEN, YELLOW, 2, 2, RED, false);
     }
 
     void left(){        // vertical function
-        rotateFaceVertical(WHITE, GREEN, GREEN, YELLOW, YELLOW,BLUE, BLUE, WHITE, ORANGE, 0, true);
+        rotateFaceVertical(YELLOW, BLUE, 0,2, BLUE, WHITE, 2, 0, WHITE, GREEN, 0,0, GREEN, YELLOW, 0,0, ORANGE, true);
     }
 
     void left_prime(){  // vertical function
-        rotateFaceVertical(WHITE,BLUE, BLUE, YELLOW, YELLOW, GREEN, GREEN , WHITE, ORANGE, 0, false);
+        rotateFaceVertical(WHITE, BLUE, 0, 2, BLUE, YELLOW, 2,0, YELLOW, GREEN, 0,0, GREEN, WHITE, 0,0, ORANGE, false);
     }
 
     void up(){ // horizontal function
@@ -907,8 +912,8 @@ int main() {
     cube.takeInput("solution.txt");
 
     // Perform right move
-    cube.right();
-    cout << "After right move:" << endl;
+    cube.left_prime();
+    cout << "After left counterclockwise move:" << endl;
 
     cube.printOriginalAndCurrentCoordinates(cube);
 
