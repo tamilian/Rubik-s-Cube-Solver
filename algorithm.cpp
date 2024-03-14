@@ -12,7 +12,8 @@ using namespace std;
 enum Moves {right_move, right_prime_move, left_move, left_prime_move, up_move, up_prime_move, down_move,
  down_prime_move, front_move, front_prime_move, back_move, back_prime_move};
 
-const int MAX_DEPTH = 30; // eventually work to 20 moves or less (optimize algo)
+const int MAX_DEPTH = 30; 
+
 // o(12^n)
 const int NUM_OF_MOVES = 12;
 
@@ -66,7 +67,7 @@ public:
         Node* parent = new Node();
         RubiksCube cube;
 
-        cube.takeInput("input.txt");
+        cube.takeInput("solution.txt");
         parent -> currentConfiguration = cube;
 
         return parent;
@@ -149,30 +150,37 @@ void printStack(stack<string> myStack) {
     }
 }
 
-    void backwards_search(Node* node, int depth){
+void backwards_search(Node* node, int depth) {
+    Node* current = node;
+    stack<string> myMoves;
 
-        Node* current = node;
-        stack<string> myMoves;
-
-        while(depth != 0){
-            
-        myMoves.push(node -> move);
-
-        current = current -> prev;
+    while (depth != 0 && current != nullptr) {
+        myMoves.push(current->move);  // Push the move of the current node
+        current = current->prev;      // Move to the previous node
         depth--;
-            
+
+        // Check if we have reached the root node
+        if (current == nullptr && depth != 0) {
+            cout << "Error: Unable to backtrack moves." << endl;
+            return;
         }
 
-        // after we have appended everything to the stack, call print stack function
-        printStack(myMoves);
-
-
+        // Check if the current cube state matches the solved state
+        if (current != nullptr && isSolved(current)) {
+            cout << "Cube is already solved!" << endl;
+            return;
+        }
     }
+
+    // After we have appended everything to the stack, call the print stack function
+    printStack(myMoves);
+}
 
 
     void ID_BFS(){
 
         // create the parent node by calling function, this is the starting point
+
         Node* start = createParent();
         queue<Node*> nodesQueue;
         // first item is the start node (it holds the pointer, and as we pop, we can access the moves needed)
@@ -219,12 +227,10 @@ void printStack(stack<string> myStack) {
 };
 
 int main() {
-    
-    RubiksCube cube;  
 
-    cube.takeInput("input.txt");  
+    Node node;
 
-    
+    node.ID_BFS();
 
-
+    return 0;
 }

@@ -1,5 +1,6 @@
 #include "cube.h"
 
+// overloaded stream insertion operator for Color enum
 std::ostream& operator<<(std::ostream& os, const Color& color) {
     switch (color) {
         case WHITE: os << "W"; break;
@@ -13,10 +14,13 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
     return os;
 }
 
+    // default constructor for CubePiece
     CubePiece::CubePiece() : color(WHITE), originalCoordinates(std::make_tuple(0, 0, 0)), currentCoordinates(std::make_tuple(0, 0, 0)) {}
 
+    // parameterized constructor for CubePiece
     CubePiece::CubePiece(Color c, int x, int y, int z) : color(c), originalCoordinates(std::make_tuple(x, y, z)), currentCoordinates(std::make_tuple(x, y, z)) {}
 
+    // assignment operator for CubePiece
     CubePiece& CubePiece::operator=(const CubePiece& other) {
         if (this != &other) { // self-assignment check
             color = other.color;
@@ -27,18 +31,20 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
     }
 
     RubiksCube::RubiksCube() {
-
-            // initialize the cube with default colors and coordinates
-            for (int i = 0; i < DIMENSION1; ++i) {
-                for (int j = 0; j < DIMENSION2; ++j) {
-                    for (int k = 0; k < DIMENSION3; ++k) {
-                        cube[i][j][k] = CubePiece(WHITE, i, j, k); // initialize with default color (e.g., WHITE)
-                    }
+        // Constructor for Rubik's Cube
+        // Initialize the cube with default colors and coordinates
+        for (int i = 0; i < DIMENSION1; ++i) {
+            for (int j = 0; j < DIMENSION2; ++j) {
+                for (int k = 0; k < DIMENSION3; ++k) {
+                    cube[i][j][k] = CubePiece(WHITE, i, j, k); // Initialize with default color (e.g., WHITE)
                 }
             }
         }
+    }
 
     CubePiece& RubiksCube::operator()(int i, int j, int k) {
+        // Operator to access cube pieces by coordinates
+        // Check if the indices are within valid range
         if (i < 0 || i >= DIMENSION1 || j < 0 || j >= DIMENSION2 || k < 0 || k >= DIMENSION3) {
             throw std::out_of_range("Index out of range!");
         }
@@ -46,44 +52,43 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
     }
 
 
-   void RubiksCube::takeInput(const std::string& filename) {
+    void RubiksCube::takeInput(const std::string& filename) {
+        // Method to initialize the cube with colors from the input file
         std::ifstream inputFile(filename);
         if (!inputFile.is_open()) {
             std::cerr << "Error: Unable to open file " << filename << std::endl;
             return;
         }
-       // Initialize the cube with colors from the input file
 
-    int colorIndex;
-    for (int i = 0; i < DIMENSION1; ++i) {
-        for (int j = 0; j < DIMENSION2; ++j) {
-            for (int k = 0; k < DIMENSION3; ++k) {
-                // Read color index from the input file
-                inputFile >> colorIndex;
+        int colorIndex;
+        for (int i = 0; i < DIMENSION1; ++i) {
+            for (int j = 0; j < DIMENSION2; ++j) {
+                for (int k = 0; k < DIMENSION3; ++k) {
+                    // Read color index from the input file
+                    inputFile >> colorIndex;
 
-                // Map color index to Color enum
-                Color color;
-                switch(colorIndex) {
-                    case 0: color = WHITE; break;
-                    case 1: color = ORANGE; break;
-                    case 2: color = GREEN; break;
-                    case 3: color = RED; break;
-                    case 4: color = BLUE; break;
-                    case 5: color = YELLOW; break;
-                    default:
-                        std::cerr << "Error: Invalid color index in input file." << std::endl;
-                        return;
+                    // Map color index to Color enum
+                    Color color;
+                    switch(colorIndex) {
+                        case 0: color = WHITE; break;
+                        case 1: color = ORANGE; break;
+                        case 2: color = GREEN; break;
+                        case 3: color = RED; break;
+                        case 4: color = BLUE; break;
+                        case 5: color = YELLOW; break;
+                        default:
+                            std::cerr << "Error: Invalid color index in input file." << std::endl;
+                            return;
+                    }
+
+                    // Set color for the cube piece
+                    cube[i][j][k] = CubePiece(color, i, j, k);
                 }
-
-                // Set color for the cube piece
-                // basically this is a 3d array with
-                cube[i][j][k] = CubePiece(color, i, j, k);
             }
         }
-    }
 
-    inputFile.close();
-}
+        inputFile.close();
+    }
 
 
     void RubiksCube::originalCoordinateRetrieval(int x, int y, int z){
@@ -808,22 +813,17 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
             rotateBackCounterClockWise(WHITE, RED, 0, 2, RED, YELLOW, 2, 2, YELLOW, ORANGE, 2, 0, ORANGE, WHITE, 0, 0, BLUE);
         }
 
-    void RubiksCube::scramble() {
-        // basically scramble the cube up 100 times (randomly choosing the moves)
+void RubiksCube::scramble(int numMoves) {
+    // open a file for writing
+    std::ofstream outputFile("scramble_moves.txt");
 
-        // open a file for writing
-        std::ofstream outputFile("scramble_moves.txt");
+    RubiksCube solvedState;
+    solvedState.takeInput("solution.txt");
 
-        RubiksCube solvedState;
-
-        takeInput("solution.txt");
-
-        if(outputFile.is_open()){
-
-            for (int i = 0; i < 100; i++){
-
-                // use rand, then use modulus and it will give us random numbers from 0 to 11
-                int move = rand() % 12;
+    if(outputFile.is_open()) {
+        for (int i = 0; i < numMoves; i++) {
+            // use rand, then use modulus and it will give us random numbers from 0 to 11
+            int move = rand() % 12;
 
             switch(move) {
                 case 0:
@@ -850,34 +850,30 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
                     solvedState.back(); break;
                 case 11:
                     solvedState.back_prime(); break;
-                }
             }
-
-            for(int i = 0; i < DIMENSION1; i++){
-                for(int j = 0; j < DIMENSION2; j++){
-                    for(int k = 0; k < DIMENSION3; k++){
-                        outputFile << static_cast<int>(solvedState(i,j,k).color) << " ";
-                    }
-                }
-            }
-
         }
+
+        for(int i = 0; i < DIMENSION1; i++) {
+            for(int j = 0; j < DIMENSION2; j++) {
+                for(int k = 0; k < DIMENSION3; k++) {
+                    outputFile << static_cast<int>(solvedState(i,j,k).color) << " ";
+                }
+            }
+        }
+
+        outputFile.close(); // close the output file
     }
+}
 
-
+/*
 int main() {
     RubiksCube cube;
 
-    cube.takeInput("solution.txt");
 
-    // Perform right move
-    cube.left_prime();
-    std::cout << "After left counterclockwise move:" << std::endl;
+    cube.scramble(1);
 
-    cube.printOriginalAndCurrentCoordinates(cube);
 
-    return 0;
-}
+}*/
 
 
 

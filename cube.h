@@ -8,46 +8,66 @@
 #include <map>
 #include <tuple>
 
+// enum for representing different colors of the cube
 enum Color {WHITE, ORANGE, GREEN, RED, BLUE, YELLOW};
 
+// overloading stream insertion operator to print Color enum
 std::ostream& operator<<(std::ostream& os, const Color& color);
 
+// constants for cube dimensions
 const int DIMENSION1 = 6;
 const int DIMENSION2 = 3;
 const int DIMENSION3 = 3;
 
+// class representing a single piece of the Rubik's Cube
 class CubePiece {
 public:
+    // color of the piece
     Color color;
+
+    // Original coordinates of the piece
     std::tuple<int, int, int> originalCoordinates;
+    
+    // current coordinates of the piece (mutable as it will change during rotations)
     mutable std::tuple<int, int, int> currentCoordinates;
 
+    // constructors
     CubePiece();
     CubePiece(Color c, int x, int y, int z);
 
+    // assignment operator
     CubePiece& operator=(const CubePiece& other);
 };
 
+// class representing the Rubik's Cube
 class RubiksCube {
 private:
+
+    // 3D array representing the Rubik's Cube
     CubePiece cube[DIMENSION1][DIMENSION2][DIMENSION3];
 
-    public:
+public:
 
+    // constructor
     RubiksCube();
 
+    // operator to access cube pieces by coordinates
     CubePiece& operator()(int i, int j, int k);
 
+    // method to take input from a file to initialize the cube
     void takeInput(const std::string& filename);
 
+    // methods for retrieving original and current coordinates of a piece
     void originalCoordinateRetrieval(int x, int y, int z);
-
     void currentCoordinateRetrieval(int x, int y, int z);
 
+    // method to print original and current coordinates of all pieces in the cube
     void printOriginalAndCurrentCoordinates(RubiksCube &c);
 
+    // method to print the current state of the cube
     void printCube() const;
 
+    // methods to perform rotations on the cube
     void rotateFaceVertical(
     Color color1Start, Color color1Dest, int color1KStart, int color1KEnd,
 
@@ -142,7 +162,8 @@ private:
 
         void back_prime();
 
-        void scramble();
+    // method to scramble the cube
+        void scramble(int numMoves);
 
 };
 
