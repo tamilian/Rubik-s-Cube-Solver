@@ -52,6 +52,7 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
     }
 
 
+
     void RubiksCube::takeInput(const std::string& filename) {
         // Method to initialize the cube with colors from the input file
         std::ifstream inputFile(filename);
@@ -108,6 +109,21 @@ std::ostream& operator<<(std::ostream& os, const Color& color) {
             << "  <- " << " Original Coordinates: "  
             "(" << std::get<0>(originalCords) << ", " << std::get<1>(originalCords) << ", " << std::get<2>(originalCords) << "). " << std::endl;
     }
+
+    // Overloading the != operator
+    bool RubiksCube::operator!=(const RubiksCube& other) const {
+        for (int i = 0; i < DIMENSION1; i++) {
+            for (int j = 0; j < DIMENSION2; j++) {
+                for (int k = 0; k < DIMENSION3; k++) {
+                    if (cube[i][j][k].color != other.cube[i][j][k].color) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     void RubiksCube::currentCoordinateRetrieval(int x, int y, int z){
 

@@ -54,6 +54,8 @@ public:
     // operator to access cube pieces by coordinates
     CubePiece& operator()(int i, int j, int k);
 
+    bool operator!=(const RubiksCube& other) const;
+
     // method to take input from a file to initialize the cube
     void takeInput(const std::string& filename);
 

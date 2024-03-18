@@ -6,6 +6,7 @@
 #include <stack>
 #include <queue>
 #include <cstring>
+#include <unordered_map>
 
 using namespace std;
 
@@ -13,22 +14,16 @@ enum Moves {right_move, right_prime_move, left_move, left_prime_move, up_move, u
  down_prime_move, front_move, front_prime_move, back_move, back_prime_move};
 
 const int MAX_DEPTH = 30; 
-
-// o(12^n)
 const int NUM_OF_MOVES = 12;
 
 class Node {
 private:
     RubiksCube currentConfiguration;
-
-    // this is where we hold the info ont the move, to access when we bfs 
     string move;
-
-    // pointers to node before so we can traverse the tree once we get to solved state
     Node* prev;
+    int depth;
 public:
 
-    // array to hold all the moves
     string moveNames[NUM_OF_MOVES] = {
         "right", 
         "right_prime", 
@@ -44,42 +39,64 @@ public:
         "back_prime"
     };
 
-    // solved cube, just to note, the enums are ints, that
     int solvedCube[6][3][3] = {
-        // Up/White
         {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-        // Front/Green
         {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}},
-        // Right/Red
         {{2, 2, 2}, {2, 2, 2}, {2, 2, 2}},
-        // Left/Orange
         {{3, 3, 3}, {3, 3, 3}, {3, 3, 3}},
-        // Down/Yellow
         {{4, 4, 4}, {4, 4, 4}, {4, 4, 4}},
-        // Back/Blue
         {{5, 5, 5}, {5, 5, 5}, {5, 5, 5}}
     };
 
-    Node() : prev(nullptr) {}
+    Node() : prev(nullptr), depth(0) {}
+
+    ~Node() {
+        if (prev != nullptr) {
+            delete prev;
+        }
+    }
+
+    // just try to make hash function as best as possible 
+
+    size_t hashConfiguration(Node* current) const {
+
+    // initialize a large prime number for better collision resistance
+    const size_t prime = 101;  
+
+    // initialize variables to store hash values for different dimensions
+    size_t hash1 = 0, hash2 = 0, hash3 = 0;
+
+    // loop through each dimension and color, applying bitwise operations
+    for (int i = 0; i < DIMENSION1; i++) {
+        for (int j = 0; j < DIMENSION2; j++) {
+        for (int k = 0; k < DIMENSION3; k++) {
+            // Combine color value with prime and current hash values
+            hash1 = (hash1 * prime + current->currentConfiguration(i, j, k).color) % prime;
+            hash2 = (hash2 * prime + (current->currentConfiguration(i, j, k).color << 8)) % prime;  // Shift by 8 bits
+            hash3 = (hash3 * prime + (current->currentConfiguration(i, j, k).color << 16)) % prime; // Shift by 16 bits
+        }
+        }
+    }
+
+    // combine the three hash values for better distribution
+    return (hash1 ^ hash2 ^ hash3);
+}
+
 
     Node* createParent() {
-
         Node* parent = new Node();
         RubiksCube cube;
 
-        cube.takeInput("solution.txt");
-        parent -> currentConfiguration = cube;
+        cube.takeInput("scramble_moves.txt");
+        parent->currentConfiguration = cube;
 
         return parent;
     }
 
-    // this function checks the current configuration
     bool isSolved(Node* node) {
-        
         for (int i = 0; i < DIMENSION1; i++) {
             for (int j = 0; j < DIMENSION2; j++) {
                 for (int k = 0; k < DIMENSION3; k++) {
-                    // remember you did operator overloading, and then access color attribute for cube piece object
                     if (node->currentConfiguration(i, j, k).color != solvedCube[i][j][k]) {
                         return false;
                     }
@@ -90,10 +107,9 @@ public:
     }
 
     void applyMoves(Node* node, Moves move) {
+        RubiksCube cube = node->currentConfiguration;
 
-        RubiksCube cube = node -> currentConfiguration;
-
-        switch(move) {
+        switch (move) {
             case right_move:
                 cube.right(); break;
             case right_prime_move:
@@ -120,117 +136,146 @@ public:
                 cube.back_prime(); break;
         }
 
-        // after transposition is made, set it equal back to cube
         node->currentConfiguration = cube;
     }
 
-    void generateChildNodes(Node* node){
+void generateChildNodes(Node* node, int depth, queue<Node*>& nodesQueue, unordered_map<size_t, pair<bool, Node*>>& visitedAndNodes){
 
-        // this for loop will add 12 child nodes for each node that is put through parameter
-        for (int move = right_move; move <= back_prime_move; move++) {
+    vector<Node*> childNodes;
 
-            Node* child = new Node();
+    for (int move = right_move; move <= back_prime_move; move++){
+
+        Node* child = new Node();
+        child -> move = moveNames[move];
+
+        child ->prev = node;
+        child -> depth = depth + 1;
+
+        applyMoves(child, static_cast<Moves>(move));
+
+        size_t childHash = hashConfiguration(child);
+
+        if (visitedAndNodes[childHash].first == false){
+            visitedAndNodes[childHash].first = true;
+            visitedAndNodes[childHash].second = child;
+            childNodes.push_back(child);
+        }else{ 
+        
+        // collision has been detected, compare it to the states in the hash functions
+
+        Node* existingNode = visitedAndNodes[childHash].second;
+
+        // compare the confugurations directly
+        RubiksCube& existingCube = existingNode -> currentConfiguration;
+        RubiksCube& newCube = child -> currentConfiguration;
+
+            bool isSame = true;
+
+            // comparing each element of the existing configuration with the new configuration
             
-            child -> move = moveNames[move]; // this attribute for object node holds which move was done to the cube config
-            child -> prev = node; // here we are linking the child nodes to the 
+            for (int i = 0; i < DIMENSION1; i++) {
+                for (int j = 0; j < DIMENSION2; j++) {
+                    for (int k = 0; k < DIMENSION3; k++) {
 
-            applyMoves(child, static_cast<Moves>(move));
+                        // if any color doesn't match between the existing and new configurations, set isSame to false
+                        if (existingCube(i, j, k).color != newCube(i, j, k).color) {
+                            isSame = false;
+                            break;
+                        }
+                    }
 
+                    if (!isSame) break;
+                }
+                if (!isSame) break;
+            }
+
+            if (!isSame) {
+                // delete the duplicate node from memory
+                delete child;
+            }
+            // if configurations are the same or different, skip generating the node
         }
     }
 
+    // add child nodes to queue
 
-void printStack(stack<string> myStack) {
-    cout << "These are the moves to solve the cube: " << endl;
-    int move = 1;
-    while (!myStack.empty()) {
-        cout << "Move " << move << " is " << myStack.top() << '.' << endl;
-        myStack.pop();
-        move++;
-    }
-}
-
-void backwards_search(Node* node, int depth) {
-    Node* current = node;
-    stack<string> myMoves;
-
-    while (depth != 0 && current != nullptr) {
-        myMoves.push(current->move);  // Push the move of the current node
-        current = current->prev;      // Move to the previous node
-        depth--;
-
-        // Check if we have reached the root node
-        if (current == nullptr && depth != 0) {
-            cout << "Error: Unable to backtrack moves." << endl;
-            return;
-        }
-
-        // Check if the current cube state matches the solved state
-        if (current != nullptr && isSolved(current)) {
-            cout << "Cube is already solved!" << endl;
-            return;
-        }
+    for (Node* child : childNodes) {
+        nodesQueue.push(child);
     }
 
-    // After we have appended everything to the stack, call the print stack function
-    printStack(myMoves);
 }
 
 
-    void ID_BFS(){
+    void printStack(stack<string> myStack) {
+        cout << "These are the moves to solve the cube: " << endl;
+        int move = 1;
+        while (!myStack.empty()) {
+            cout << "Move " << move << " is " << myStack.top() << '.' << endl;
+            myStack.pop();
+            move++;
+        }
+    }
 
-        // create the parent node by calling function, this is the starting point
+    void backwards_search(Node* node, int depth) {
+        Node* current = node;
+        stack<string> myMoves;
 
-        Node* start = createParent();
-        queue<Node*> nodesQueue;
-        // first item is the start node (it holds the pointer, and as we pop, we can access the moves needed)
-        nodesQueue.push(start);
+        while (depth != 0 && current != nullptr) {
+            myMoves.push(current->move);
+            current = current->prev;
+            depth--;
 
+            if (current == nullptr && depth != 0) {
+                cout << "Error: Unable to backtrack moves." << endl;
+                return;
+            }
 
-        // max depth of 30, the solution should be solved within then
-        for (int depth = 0; depth <= MAX_DEPTH; depth++) {
-
-            int levelSize = nodesQueue.size();
-
-            // we will use a queue to hold all the current nodes at that node and iterate through them 
-            // we need to first check if it solved, and if it is not, create the child nodes for that respective 
-
-            for (int i = 0; i < levelSize; i++) {
-                Node* current = nodesQueue.front();
-                nodesQueue.pop();
-
-                // this is where we check each node and see if it is solved
-                if (isSolved(current)) {
-                    // run the backwards serch alorithm, print the stack and return
-                    cout << "Solution found!" << endl;
-                    backwards_search(current, depth); 
-                    return;
-                }
-                
-                // so if it is not solved, then we can generate child nodes for that node
-                generateChildNodes(current);
-
-                for (int move = right_move; move <= back_prime_move; move++) {
-
-                    Node* child = new Node();
-
-                    child -> move = moveNames[move];
-                    child -> prev = current;
-
-                    applyMoves(child, static_cast<Moves>(move));
-                    nodesQueue.push(child);
-                }
+            if (current != nullptr && isSolved(current)) {
+                cout << "Cube is already solved!" << endl;
+                return;
             }
         }
-        throw runtime_error("Solution not found within the depth limit");
+
+        printStack(myMoves);
     }
+
+void ID_BFS() {
+    Node* start = createParent();
+    start->depth = 0;
+
+
+
+    queue<Node*> nodesQueue;
+
+    unordered_map<size_t, pair<bool, Node*>> visitedAndNodes; // Corrected type
+
+    visitedAndNodes[hashConfiguration(start)].first = true; // Initialize with start node
+    visitedAndNodes[hashConfiguration(start)].second = start; // Initialize with start node
+    nodesQueue.push(start);
+
+    for (int depth = 0; depth <= MAX_DEPTH; depth++) {
+        int levelSize = nodesQueue.size();
+
+        for (int i = 0; i < levelSize; i++) {
+            Node* current = nodesQueue.front();
+            nodesQueue.pop();
+
+            if (isSolved(current)) {
+                cout << "Solution found!" << endl;
+                backwards_search(current, current->depth);
+                return;
+            }
+
+            generateChildNodes(current, current->depth, nodesQueue, visitedAndNodes); // pass visitedAndNodes
+        }
+    }
+    throw runtime_error("Solution not found within the depth limit");
+}
 };
 
 int main() {
 
     Node node;
-
     node.ID_BFS();
-
     return 0;
 }
