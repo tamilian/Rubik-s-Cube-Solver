@@ -9,8 +9,20 @@
 #include <unordered_map>
 
 
-enum Moves {right_move, right_prime_move, left_move, left_prime_move, up_move, up_prime_move, down_move,
- down_prime_move, front_move, front_prime_move, back_move, back_prime_move};
+enum Moves : uint8_t {
+ right_move = 0b000,
+ right_prime_move = 0b001, 
+ left_move = 0b0010, 
+ left_prime_move = 0b0011,
+ up_move = 0b0100, 
+ up_prime_move = 0b0101, 
+ down_move = 0b0110,
+ down_prime_move = 0b0111, 
+ front_move = 0b1000, 
+ front_prime_move = 0b1001, 
+ back_move = 0b1010, 
+ back_prime_move = 0b1011
+ };
 
 // maximum depth for search
 const int MAX_DEPTH = 30;
@@ -21,7 +33,7 @@ const int NUM_OF_MOVES = 12;
 class Node {
 private:
     RubiksCube currentConfiguration; // current Rubik's Cube configuration
-    std::string move; // move made to reach this configuration
+    uint32_t moves; // move made to reach this configuration
     Node* prev; // pointer to previous node in the search tree (for backwards search)
     int depth; // depth of the current node in the search tree
 public:
@@ -70,7 +82,7 @@ public:
         // loop through each dimension and color, applying bitwise operations
         for (int i = 0; i < DIMENSION1; i++) {
             for (int j = 0; j < DIMENSION2; j++) {
-                for (int k = 0; k < DIMENSION3; k++) {\
+                for (int k = 0; k < DIMENSION3; k++) {
 
                     // Combine color value with prime and current hash values
                     hash1 = (hash1 * prime + current->currentConfiguration(i, j, k).color) % prime;
@@ -145,7 +157,9 @@ public:
     }
 
     // function to generate child nodes from the current node
-    void generateChildNodes(Node* node, int depth, std::queue<Node*>& nodesQueue, std::unordered_map<size_t, std::pair<bool, Node*>>& visitedAndNodes){
+    
+    void generateChildNodes(Node* node, int depth, std::queue<Node*>& nodesQueue,
+     std::unordered_map<size_t, std::pair<bool, Node*>>& visitedAndNodes){
 
         std::vector<Node*> childNodes;
 
@@ -203,40 +217,13 @@ public:
         }
     }
 
-    // function to print the sequence of moves
-    void printStack(std::stack<std::string> myStack) {
-        std::cout << "These are the moves to solve the cube: " << std::endl;
-        int move = 1;
-        while (!myStack.empty()) {
-            std::cout << "Move " << move << " is " << myStack.top() << '.' << std::endl;
-            myStack.pop();
-            move++;
+    void printMoves(){
+        for (int i = 0; i < depth; i++){
+            uint8_t moveIndex = (moves >> (i * 4)) & 0xF; // Extracting 4 bits representing each move
+            std::cout << moveNames[moveIndex] << std::endl;
         }
     }
 
-    // function to backtrack and print the steps
-    void backwards_search(Node* node, int depth) {
-        Node* current = node;
-        std::stack<std::string> myMoves;
-
-        while (depth != 0 && current != nullptr) {
-            myMoves.push(current->move);
-            current = current->prev;
-            depth--;
-
-            if (current == nullptr && depth != 0) {
-                std::cout << "Error: Unable to backtrack moves." << std::endl;
-                return;
-            }
-
-            if (current != nullptr && isSolved(current)) {
-                std::cout << "Cube is already solved!" << std::endl;
-                return;
-            }
-        }
-
-        printStack(myMoves);
-    }
 
     // function implementing Iterative Deepening Breadth-First Search
     void ID_BFS() {

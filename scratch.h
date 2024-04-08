@@ -1,5 +1,5 @@
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef SCRATCH_H
+#define SCRATCH_H
 
 #include <iostream>
 #include <fstream>
@@ -7,10 +7,17 @@
 #include <stdexcept>
 #include <map>
 #include <tuple>
+#include <array>
 
-// enum for representing different colors of the cube
-enum Color {WHITE, ORANGE, GREEN, RED, BLUE, YELLOW};
-
+// enum for representing different colors of the cube (3 bits per color)
+enum Color : uint8_t {
+    WHITE  = 0b000,
+    ORANGE = 0b001,
+    GREEN  = 0b010,
+    RED    = 0b011,
+    BLUE   = 0b100,
+    YELLOW = 0b101
+};
 // overloading stream insertion operator to print Color enum
 std::ostream& operator<<(std::ostream& os, const Color& color);
 
@@ -18,6 +25,8 @@ std::ostream& operator<<(std::ostream& os, const Color& color);
 const int DIMENSION1 = 6;
 const int DIMENSION2 = 3;
 const int DIMENSION3 = 3;
+
+const int TOTAL_PIECES = 54;
 
 // class representing a single piece of the Rubik's Cube
 class CubePiece {
@@ -45,7 +54,7 @@ class RubiksCube {
 private:
 
     // 3D array representing the Rubik's Cube
-    CubePiece cube[DIMENSION1][DIMENSION2][DIMENSION3];
+    std::array<CubePiece, TOTAL_PIECES> cube;
 
 public:
 
@@ -172,4 +181,4 @@ public:
 
 };
 
-#endif // CUBE_H
+#endif // SCRATCH_H
