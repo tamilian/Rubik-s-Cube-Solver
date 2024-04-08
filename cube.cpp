@@ -58,22 +58,6 @@ private:
 
     CubePiece cube[DIMENSION1][DIMENSION2][DIMENSION3];
 
-    void originalCoordinateRetrieval(int x, int y, int z){
-
-    // check if input is within bounds
-    if (x < 0 || x >= DIMENSION1 || y < 0 || y >= DIMENSION2 || z < 0 || z >= DIMENSION3){
-        cerr << "Your dimensions are out of bounds" << endl;
-    }
-
-    // simplify 
-
-    tuple<int, int, int> originalCords = cube[x][y][z].originalCoordinates;
-
-    // use get method in tuple to access each original coordinate
-
-    cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
-        << " are " << "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
-}
     
 public: 
 
@@ -945,3 +929,4 @@ int main() {
 
     return 0;
 }
+
