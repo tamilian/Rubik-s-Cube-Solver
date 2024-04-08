@@ -74,7 +74,7 @@ private:
     cout << "Original Coordinates of this piece at (" << x << ", " << y <<  ", " << z <<  ") "
         << " are " << "(" << get<0>(originalCords) << ", " << get<1>(originalCords) << ", " << get<2>(originalCords) << "). " << endl;
 }
-
+    
 public: 
 
     // default constructor
